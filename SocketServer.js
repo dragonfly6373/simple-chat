@@ -10,19 +10,19 @@ var SocketServer = (function() {
 	var _group = {};
 	var _session = {};
 	function onConnect(message) {
-		this.emit(Event.EVT_CONNECT, message);
+		this.emit(Event.EVT_CONNECT, "");
 	}
 	function onJoin(message) {
-		this.emit(Event.EVT_JOIN, message);
+		this.emit(Event.EVT_JOIN, "");
 	}
 	function onMessage(message) {
 		this.emit(Event.EVT_MESSAGE, message);
 	}
-	function onEmit(message) {
-		this.emit(Event.EVT_DISCONNECT);
-	}
 	function onLeave(message) {
-		this.emit(Event.EVT_LEAVE, message);
+		this.emit(Event.EVT_LEAVE, "");
+	}
+	function onDisconnect() {
+		this.emit(Event.EVT_DISCONNECT);
 	}
 	return {
 		start: function(io) {
@@ -36,3 +36,5 @@ var SocketServer = (function() {
 		},
 	};
 }
+
+module.exports = SocketServer;

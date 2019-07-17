@@ -6,12 +6,14 @@ var io = require('socket.io')(http);
 var redisAdapter = require('socket.io-redis');
 
 var db = require('./db/MongoDb');
-var User = require('./db/model/User');
 var router = require('./routes');
 
 db.connect('mongodb://localhost/chat-room');
-db.insert(User, {name: "ABC", email: "abc@gmail.com", gender: User.Gender.Male}, function(data) {
-	console.log("Insert data:", data);
+var User = require('./db/model/User')(db.getConnection());
+var Room = require('./db/model/Room');
+
+db.getAll(User, {}, function(data) {
+	console.log("retrieve data:", data);
 });
 
 app.get('/', (req, res, next) => {
@@ -20,7 +22,7 @@ app.get('/', (req, res, next) => {
 
 app.get('/chat', (req, res) => {
 	console.log("join chat room");
-	res.sendFile(path.join(__dirname, 'index.html'));
+	res.sendFile(path.join(__dirname, 'public/ChatClient.html'));
 });
 
 app.use('/rest', router);

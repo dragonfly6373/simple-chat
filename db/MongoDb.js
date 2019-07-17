@@ -1,17 +1,14 @@
 var mongoose = require('mongoose');
 
 var MongoDb = (function() {
-	var DB_NAME = null;
-	var __connection = null;
+    var DB_NAME = null;
+    var __connection = null;
     function getConnection() {
-        if (!__connection || !__connection.open) {
+        if (!__connection) {
             mongoose.connect(DB_NAME, {useNewUrlParser: true});
-            __connection = mongoose.connection;
+            __connection = mongoose;
         }
         return __connection;
-    }
-    function findById(model, id) {
-
     }
     function _find(clazz, condition, callback) {
         var Model = mongoose.model(clazz.schema_name, clazz.schema);
@@ -26,6 +23,7 @@ var MongoDb = (function() {
             __connection = getConnection();
             return this;
         },
+        getConnection: getConnection,
         // create: function(clazz, callback) {
         //     var model = mongoose.model(clazz.schema_name, clazz.schema);
         //     model.save(function(error) {
@@ -35,7 +33,7 @@ var MongoDb = (function() {
         // },
         insert: function(clazz, data, callback) {
             var Model = mongoose.model(clazz.schema_name, clazz.schema);
-            new Model(data).save();
+            new Model(data).save(callback);
         },
         insertMulti: function(clazz, datalist, callback) {
             var Model = mongoose.model(clazz.schema_name, clazz.schema);
