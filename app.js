@@ -2,22 +2,19 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var http = require('http').createServer(app);
+var session = require('express-session');
 var io = require('socket.io')(http);
-var redisAdapter = require('socket.io-redis');
+// var redisAdapter = require('socket.io-redis');
 
-var db = require('./db/MongoDb');
-var router = require('./routes');
+var properties = require('./properties.js');
+// var router = require('./routes.js');
+var controller = require('./controller/chat-controller.js');
+var serviceBuilder = require('./service/ServiceBuilder.js');
 
-db.connect('mongodb://localhost/chat-room');
-var User = require('./db/model/User')(db.getConnection());
-var Room = require('./db/model/Room');
-
-db.getAll(User, {}, function(data) {
-	console.log("retrieve data:", data);
-});
+app.use(session({secret: 'keyboard cat', cookie: {maxAge: 60000}}));
 
 app.get('/', (req, res, next) => {
-	res.send("<h1>Hello World!</h1>");
+	res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.get('/chat', (req, res) => {
@@ -25,7 +22,7 @@ app.get('/chat', (req, res) => {
 	res.sendFile(path.join(__dirname, 'public/ChatClient.html'));
 });
 
-app.use('/rest', router);
+app.use('/rest', serviceBuilder.build(controller));
 app.use(express.static(path.join(__dirname, 'public')));
 
 var chatGroup = {};
@@ -47,7 +44,7 @@ io.on("connect", function(socket) {
 	});
 });
 
-http.listen(3000, () => {
-	console.log("server is starting on http://127.0.0.1:3000");
+http.listen(properties.PORT, () => {
+	console.log("server is starting on http://127.0.0.1:" + properties.PORT);
 });
 
