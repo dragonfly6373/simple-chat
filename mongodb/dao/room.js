@@ -1,9 +1,10 @@
 var mongoose = require("mongoose");
-var schema = require("../model/Room.js");
+var dto = require("../model/Room.js");
+var schema = dto.schema;
 
 schema.statics = {
 
 }
 
-var model = mongoose.model(schema.schema_name, schema);
+var model = mongoose.model(dto.name, schema);
 module.exports = model;

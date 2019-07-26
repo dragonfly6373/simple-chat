@@ -1,47 +1,57 @@
 var mongoose = require("mongoose");
 var dbUrl = require("../properties.js").DB;
 
-module.exports = function() {
-    mongoose.connect(dbUrl);
+function _connect() {
+    console.log("# mongodb try to connect", dbUrl);
+    if (mongoose.connection.readyState != 1) {
+        mongoose.connect(dbUrl, {useNewUrlParser: true});
+        mongoose.connection.on("error", function(error) {
+            console.log("Fail to connection mongodb with error:", error);
+        });
+    }
+}
 
-    mongoose.connection.on("connected", function() {
-        console.log("Mongoose default connection is open to " + dbUrl);
-    });
+function newModel(Clazz) {
+    return mongoose.model(Clazz);
+}
+function DataAdapter() {
 
-    mongoose.connection.on("error", function(err) {
-        console.log("Mongoose default connection has occured " + err + " error");
-    });
+}
+    DataAdapter.prototype.create = function(Clazz, data, callback) {
+        _connect();
+        var Model = newModel(Clazz);
+        var model = new Model(data);
+        model.save(callback);
+    };
 
-    mongoose.connection.on("disconnected", function() {
-        console.log("Mongoose default connection is disconnected");
-    });
+    DataAdapter.prototype.getById = function(Clazz, id, callback) {
+        _connect();
+        var Model = newModel(Clazz);
+        Model.find({_id: id}, callback);
+    };
 
-    mongoose.connection.close(function(){
-        console.log("Mongoose default connection is disconnected due to application termination");
-    });
-};
+    DataAdapter.prototype.getALl = function(Clazz, query, callback) {
+        _connect();
+        var Model = newModel(Clazz);
+        Model.find(query, callback);
+    };
 
-module.exports.create = function(Clazz, data, callback) {
-    var user = new Clazz(data);
-    user.save(callback);
-};
+    DataAdapter.prototype.updateById = function(Clazz, id, data, callback) {
+        _connect();
+        var Model = newModel(Clazz);
+        Model.findByIdAndUpdate(id, {$set: data}, {new: true}, callback);
+    };
 
-module.exports.getById = function(Clazz, id, callback) {
-    Clazz.find({_id: id}, callback);
-};
+    DataAdapter.prototype.updateMany = function(Clazz, query, data, callback) {
+        _connect();
+        var Model = newModel(Clazz);
+        Model.updateMany(query, {$set: data}, callback);
+    };
 
-module.exports.getALl = function(Clazz, query, callback) {
-    Clazz.find(query, callback);
-};
+    DataAdapter.prototype.deleteById = function(Clazz, id, callback) {
+        _connect();
+        var Model = newModel(Clazz);
+        Model.findByIdAndUpdate(id, {$set: {deleted: true}}, callback);
+    }
 
-module.exports.updateById = function(Clazz, id, data, callback) {
-    Clazz.findByIdAndUpdate(id, {$set: data}, {new: true}, callback);
-};
-
-module.exports.updateMany = function(Clazz, query, data, callback) {
-    Clazz.updateMany(query, {$set: data}, callback);
-};
-
-module.exports.deleteById = function(Clazz, id, callback) {
-    Clazz.findByIdAndUpdate(id, {$set: {deleted: true}}, callback);
-};
+module.exports = DataAdapter;

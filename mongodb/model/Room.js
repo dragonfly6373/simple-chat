@@ -1,7 +1,7 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
-module.exports.schema_name = "room";
+module.exports.name = "room";
 
 var Room = new Schema({
 	name: String,
@@ -13,4 +13,4 @@ var Room = new Schema({
 	}
 });
 
-module.exports = Room;
+module.exports.schema = Room;

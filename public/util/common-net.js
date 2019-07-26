@@ -47,9 +47,32 @@ var CommonNet = (function () {
             if (listener) listener.busy();
         };
     }
+    function initServices(services) {
+        Object.getOwnPropertyNames(services).forEach(function(api_name) {
+            Object.getOwnPropertyNames(services[api_name]).forEach(function(service) {
+                if (!window["$" + api_name]) window["$" + api_name] = {};
+                var api = window["$" + api_name];
+                api[service] = function() {
+                    var requiredParams = window._registry[api_name][service];
+                    if (arguments.length != requiredParams.length + 2) {
+                        console.error("service " + api_name + "." + service + " missing parameters: require "
+                            + (requiredParams.length + 2)
+                            + " but got " + arguments.length);
+                        return;
+                    }
+                    var params = {};
+                    for (var p in requiredParams) {
+                        params[requiredParams[p]] = arguments[p];
+                    }
+                    CommonNet.get(api_name + "/" + service, params, arguments[requiredParams.length], arguments[requiredParams.length + 1]);
+                }
+            });
+        });
+    }
     return {
         get: makeRequestFunction("GET", true),
         post: makeRequestFunction("POST", false),
-        postWithQueryString: makeRequestFunction("POST", true)
+        postWithQueryString: makeRequestFunction("POST", true),
+        initServices: initServices
     }
 })();

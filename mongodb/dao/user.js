@@ -1,5 +1,6 @@
 var mongoose = require("mongoose");
-var schema = require("../model/User.js");
+var dto = require("../model/User.js");
+var schema = dto.schema;
 
 schema.statics = {
     create: function(data, callback) {
@@ -23,5 +24,5 @@ schema.statics = {
     }
 };
 
-var model = mongoose.model("user", schema);
+var model = mongoose.model(dto.name, schema);
 module.exports = model;
