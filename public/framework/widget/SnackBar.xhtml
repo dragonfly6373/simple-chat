@@ -1,0 +1,48 @@
+<hbox xmlns:ui="http://evolus.vn/Namespaces/WebUI/1.0">
+    <style>
+        @this {
+            padding: 1em;
+            align-items: center;
+
+            &:not(.WithExtraMessage) @extraMessage {
+                display: none;
+            }
+            &.WithExtraMessage @message {
+                font-weight: bold;
+            }
+
+            &:not(.WithAction) @actionButton {
+                display: none;
+            }
+            &:not(.Closable) @closeButton {
+                display: none;
+            }
+        }
+
+        @icon {
+            font-size: 2.3em;
+            margin-right: 0.4em;
+            opacity: 0.7;
+        }
+
+        @actionButton {
+            margin-left: 1em;
+            min-width: 5em;
+        }
+
+        @closeButton {
+            margin-left: 1em;
+            background: transparent;
+            color: #FFF;
+        }
+
+
+    </style>
+    <icon anon-id="icon" ></icon>
+    <vbox flex="1">
+        <span anon-id="message"></span>
+        <span anon-id="extraMessage"></span>
+    </vbox>
+    <button anon-id="actionButton" type="button"></button>
+    <button anon-id="closeButton" type="button"><icon class="close" ></icon></button>
+</hbox>

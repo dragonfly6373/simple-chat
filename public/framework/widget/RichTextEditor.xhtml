@@ -1,0 +1,58 @@
+<vbox>
+    <style>
+        @this {
+            width: 70em;
+            overflow: hidden;
+            position: relative;
+            
+            &:not(.Initialized) {
+                visibility: hidden;
+            }
+        }
+        @contentPane {
+            border: none;
+            width: 100%;
+        }
+        @this.CV_Invalid {
+            outline: dashed 1px @problem_color;
+            outline-offset: 1px;
+        }
+        body .cke_dialog_body {
+            box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
+        }
+        .cke_button_icon {
+            transform: scale(0.85);
+        }
+        
+        @editSourceButton {
+            position: absolute;
+            right: 1em;
+            top: 4em;
+            padding: 0.3em;
+            &:hover {
+                background: rgba(0, 0, 0, 0.1);
+            }
+        }
+        
+        @this:not(.ToolbarShifted) @toolbarPadding {
+            display: none;
+        }
+        
+        @this.ToolbarShifted .cke_top {
+            position: fixed;
+        }
+        
+        .cke_toolgroup,
+        .cke_combo_button {
+            border-color: #ddd;
+            border-bottom-color: #d2d2d2;
+        }
+        .cke_top {
+            background-image: none;
+            background-color: @app_bg;
+        }
+    </style>
+    <div anon-id="toolbarPadding"></div>
+    <textarea anon-id="contentInput" flex="1"></textarea>
+    <button anon-id="editSourceButton"><icon class="code-tags"></icon> Source...</button>
+</vbox>

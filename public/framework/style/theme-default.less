@@ -1,0 +1,782 @@
+@import "theme-default-includes.less";
+@import "materialdesignicons/css/materialdesignicons.less";
+@import "layout-includes.less";
+
+@keyframes ripple {
+    0% {
+        transform: scale(0, 0);
+        opacity: 1;
+    }
+    20% {
+        transform: scale(25, 25);
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: scale(80, 80);
+    }
+}
+@keyframes ripple-bg {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes spin360 {
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(360deg);
+    }
+}
+
+
+html {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  margin: 0px;
+  padding: 0px;
+}
+html {
+}
+label {
+  font-weight: normal;
+}
+
+/* Base */
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.9em;
+    font-size-adjust: none;
+    line-height: @default-line-height;
+    color: @primary_text_color;
+}
+
+/* Push Buttons */
+@primary_button_color: #84C55F;
+@primary_button_text_color: #FFFFFF;
+@secondary_button_color: #F6E071;
+@secondary_button_text_color: #333333;
+@danger_button_color: #EE3523;
+@danger_button_text_color: #FFFFFF;
+@extra_button_color: #5fa8dc;
+@extra_button_text_color: #FFFFFF;
+
+button,
+input[type='button'] {
+    .line-height-default();
+    padding: unit(7 * @dp, em) unit(12 * @dp, em);
+    margin: 0em;
+    border: none;
+    border-radius: unit(3 * @dp, em);
+
+    background: #E6E6E6;
+    font-weight: 500;
+    font-family: inherit;
+
+    box-sizing: border-box;
+    color: #333;
+
+    outline: none !important;
+
+    .ripple-effect();
+
+    &:focus {
+        background: rgba(153, 153, 153, 0.3);
+        outline: none !important;
+    }
+    &::-moz-focus-inner {
+        border: 0;
+    }
+}
+
+button[mode='raised'],
+input[type='button'][mode='raised'] {
+    .z-depth(2);
+}
+
+button[role='primary'],
+input[type='button'][role='primary'] {
+    background-color: @primary_button_color;
+    color: @primary_button_text_color;
+    font-weight: bold;
+}
+button[role='primary']:focus,
+input[type='button'][role='primary']:focus {
+    background-color: shade(@primary_button_color, 20%);
+}
+
+button[role='danger'],
+input[type='button'][role='danger'] {
+    background-color: @danger_button_color;
+    color: @danger_button_text_color;
+}
+button[role='danger']:focus,
+input[type='button'][role='danger']:focus {
+    background-color: shade(@danger_button_color, 20%);
+}
+
+button[role='secondary'],
+input[type='button'][role='secondary'] {
+    background-color: @secondary_button_color;
+    color: @secondary_button_text_color;
+    font-weight: bold;
+}
+button[role='secondary']:focus,
+input[type='button'][role='secondary']:focus {
+    background-color: shade(@secondary_button_color, 20%);
+}
+
+button[role='extra'],
+input[type='button'][role='extra'] {
+    background-color: @extra_button_color;
+    color: @extra_button_text_color;
+}
+button[role='extra']:focus,
+input[type='button'][role='extra']:focus {
+    background-color: shade(@extra_button_color, 20%);
+}
+
+button[disabled],
+input[type='button'][disabled] {
+    background: transparent;
+    color: rgba(0, 0, 0, .26);
+    text-shadow: none;
+    box-shadow: none;
+}
+
+button > icon {
+    font-size: 1.4em;
+    opacity: 0.87;
+}
+button > * {
+    vertical-align: middle;
+}
+button > icon + * {
+    margin-left: 0.3em;
+}
+
+/* Text boxes */
+input[type='text'],
+input[type='password'],
+input[type='number'],
+textarea {
+    #sys-text-style();
+}
+
+/* Checkbox & Radio */
+@checkbox-font-size: unit(@default-line-height * 1.2, em);
+.base-checkable-control() {
+    font: inherit;
+    font-size: 1em;
+    display: inline-block;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none !important;
+    appearance: none;
+    margin: 0px;
+    padding: 0px;
+    background: transparent;
+
+    &:before {
+        .base-icon();
+        color: fade(@base_text_color, 54%);
+
+        font-size: @checkbox-font-size;
+        line-height: 1;
+    }
+    &:checked::before {
+        color: @primary_color;
+    }
+
+    &:focus {
+        outline: none !important;
+    }
+    &::-moz-focus-inner {
+        border: 0;
+    }
+    &:disabled,
+    &[disabled] {
+        &:checked:before {
+            color: fade(@primary_color, 30%);
+        }
+    }
+
+    .InlineEntry > & + label {
+        margin-left: 0.3em;
+    }
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+    .base-checkable-control();
+}
+
+.InlineEntry > * {
+    vertical-align: middle;
+}
+
+input[type="checkbox"]:before {
+    .mdi-icon-name-to-content("checkbox-blank-outline");
+}
+input[type="checkbox"]:checked::before {
+    .mdi-icon-name-to-content("checkbox-marked");
+}
+input[type="radio"]:before {
+    .mdi-icon-name-to-content("radiobox-blank");
+}
+input[type="radio"]:checked::before {
+    .mdi-icon-name-to-content("radiobox-marked");
+}
+
+
+/* Data Tables */
+.widget_DataTable {
+    background: #ffffff;
+    border-radius: unit(2 * @dp, em);
+    .z-depth(2);
+}
+.widget_DataTable[flat=true] {
+    box-shadow: none;
+}
+.widget_DataTable > table {
+    border-spacing: 0px;
+}
+.widget_DataTable > table > thead > tr > th {
+    color: fade(@base_text_color, 54%);
+    font-weight: 500;
+    text-align: left;
+    line-height: 1.2em;
+    padding: 0px;
+}
+.widget_DataTable > table > thead > tr > th.Sortable {
+    .ripple-effect();
+}
+.widget_DataTable > table > thead > tr > th.Sortable:hover {
+    color: @primary_text_color;
+    cursor: default;
+    background: @hover_bg;
+}
+.widget_DataTable > table > thead > tr > th.Sortable.DescSort,
+.widget_DataTable > table > thead > tr > th.Sortable.AscSort {
+    position: relative;
+    overflow: visible;
+}
+.widget_DataTable > table > thead > tr > th.Sortable.DescSort:before,
+.widget_DataTable > table > thead > tr > th.Sortable.AscSort:before {
+    position: absolute;
+    left: 0em;
+    top: 50%;
+    margin-top: -0.5em;
+}
+.widget_DataTable > table > thead > tr > th.Sortable.DescSort {
+    .icon("arrow-down");
+}
+.widget_DataTable > table > thead > tr > th.Sortable.AscSort {
+    .icon("arrow-up");
+}
+.widget_DataTable > table > thead > tr > th[data-type="numeric"],
+.widget_DataTable > table > tbody > tr > td[data-type="numeric"] {
+    text-align: right;
+}
+.widget_DataTable > table > thead > tr > th,
+.widget_DataTable > table > tbody > tr > td {
+    padding: 0px;
+}
+.widget_DataTable > table > thead > tr > th > div,
+.widget_DataTable > table > tbody > tr > td > .CellContentWrapper {
+    padding: unit(10 * @dp, em) unit(16 * @dp, em);
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.widget_DataTable > table > thead > tr > th > div {
+    height: unit(10 * @dp, em) * 2 + 1.2em;
+}
+.widget_DataTable > table > tbody > tr > td {
+    line-height: 1.2em;
+    border-top: solid unit(1 * @dp, em) fade(@base_text_color, 12%);
+}
+.widget_DataTable > table > tbody > tr:hover {
+    background: @hover_bg;
+}
+.widget_DataTable > .ColumnSetting span {
+    display: block;
+}
+.widget_DataTable > .ColumnSetting span i {
+    .icon("dots-vertical");
+    font-size: unit(10 * @dp, em) * 2 + 0.4em;
+    line-height: 1em;
+    height: 1em;
+    box-sizing: content-box;
+    display: block;
+    padding: (0.4em / (20 * @dp + 0.4)) 0em;
+    color: fade(@base_text_color, 54%);
+
+    .ripple-effect();
+}
+.widget_DataTable > .ColumnSetting span i:hover {
+    background: @hover_bg;
+}
+
+/* Tab Pane */
+.widget_TabPane > .AnonId_header {
+    background: #E0E0E0;
+    padding-left: 1em;
+}
+.widget_TabPane > .AnonId_header > .TabHeader {
+    color: #767676;
+    background-color: transparent;
+    padding: unit(10 * @dp, em) unit(18 * @dp, em);
+    font-weight: bold;
+    text-align: center;
+    max-width: unit(200 * @dp, em);
+
+    .ripple-effect();
+}
+.widget_TabPane > .AnonId_header > .TabHeader.ActiveTab {
+    color: #000;
+    background: #EEEEEE;
+    border-bottom: none;
+    border-top: solid 2px #5CA7E0;
+}
+.widget_TabPane > .AnonId_content > .TabBody {
+    padding: unit(18 * @dp, em);
+}
+
+/* Popup, Menu and Combo */
+
+.AnonId_popupContainer {
+    background: #ffffff;
+    border-radius: unit(2 * @dp, em);
+    .z-depth(2);
+
+    transition: opacity 0.4s;
+    box-sizing: border-box;
+
+    padding: unit(8 * @dp, em) 0rem;
+}
+
+.AnonId_popupContainer.ComboManagerPopup .AnonId_list .Item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.widget_ComboManager {
+    .gradient(linear; #FFFFFF, #F7F7F7, #FFFFFF; 90deg);
+    border: solid 1px #CDCDCD;
+}
+.widget_ComboManager .AnonId_buttonDisplay {
+    padding-right: 1.7em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.widget_ComboManager > icon {
+    font-size: 1.4em;
+    position: absolute;
+    top: 50%;
+    margin-top: -0.5em;
+    right: 0.1em;
+}
+.AnonId_popupContainer.ComboManagerPopup .AnonId_list {
+    overflow: auto;
+}
+.AnonId_popupContainer.MenuPopupContainer .MenuItem:not(.MenuSeparator) {
+    align-items: center;
+}
+.AnonId_popupContainer.MenuPopupContainer .MenuItem:not(.MenuSeparator),
+.AnonId_popupContainer.ComboManagerPopup .AnonId_list .Item {
+    padding: unit(8 * @dp, em) unit(12 * @dp, em);
+    cursor: default;
+    &.Selected {
+        background: @primary_color;
+        color: @inverted_text_color;
+    }
+}
+.AnonId_popupContainer.MenuPopupContainer .MenuSeparator {
+    border: none;
+    border-top: solid unit(2 * @dp, em) rgba(0, 0, 0, 12%);
+    height: unit(2 * @dp, em);
+    box-sizing: border-box;
+    margin: unit(7 * @dp, em) 0em;
+}
+.AnonId_popupContainer.MenuPopupContainer .MenuItem.Active:not([disabled='true']),
+.AnonId_popupContainer.MenuPopupContainer .MenuItem:not([disabled='true']):hover,
+.AnonId_popupContainer.ComboManagerPopup .AnonId_list .Item:hover {
+    background: @hover_bg;
+    color: @base_text_color;
+    &.Selected {
+        background: fade(@primary_color, 40%);
+    }
+}
+.AnonId_popupContainer.MenuPopupContainer .MenuItem[disabled='true'] {
+    opacity: 0.6;
+}
+.AnonId_popupContainer.MenuPopupContainer .MenuItem > label {
+    min-width: 1em;
+    margin-right: 0.5em;
+}
+.AnonId_popupContainer.MenuPopupContainer .MenuItem > i {
+    font-size: 1.4em;
+    width: 1.2em;
+}
+
+.AnonId_popupContainer.MenuPopupContainer .MenuItem > input {
+    width: 1.2em * 1.4;
+}
+
+.AnonId_popupContainer.MenuPopupContainer .MenuItem > label + i {
+    text-align: right;
+}
+.AnonId_popupContainer.MenuPopupContainer .MenuItem > *:first-child + label {
+    margin-left: 0.8ex;
+}
+.AnonId_popupContainer.MenuPopupContainer.NoPrefix .MenuItem > *:first-child + label {
+    margin-left: 0ex;
+}
+.AnonId_popupContainer.MenuPopupContainer .MenuItem > *:first-child + label + * {
+    margin-left: 2ex;
+}
+
+/* Dialogs */
+@dialog_frame_bg: #EEEEEE;
+.Sys_DialogOverlay {
+    background: rgba(0, 0, 0, 0.15);
+}
+.AnonId_dialogFrame {
+    border: none;
+    border-radius: unit(6 * @dp, em);
+    background: @dialog_frame_bg;
+    .z-depth-8dp();
+    transition: opacity 0.4s;
+}
+.AnonId_dialogFrame:focus {
+    outline: none;
+}
+
+.AnonId_dialogFrame .AnonId_dialogHeaderPane {
+    margin: 0em;
+    padding: unit(12 * @dp, em);
+    border-bottom: solid 1px rgba(0, 0, 0, 0.05);
+    align-items: center;
+}
+
+.AnonId_dialogFrame .AnonId_dialogHeaderPane:hover .AnonId_dialogClose {
+    opacity: 0.7;
+}
+.AnonId_dialogFrame .AnonId_dialogHeaderPane .AnonId_dialogClose {
+    width: 1em;
+    height: 1em;
+    text-align: center;
+    line-height: 1em;
+    font-size: unit(20 * @dp * @default-line-height, em);
+    padding: 0em;
+    .icon("close");
+
+    padding: 0.2em;
+    margin: -0.2em;
+
+    border-radius: 0.7em;
+    opacity: 0.5;
+    transition: opacity 0.5s ease;
+    color: #F00;
+
+    font-weight: bold;
+
+    .ripple-effect();
+
+    &:hover {
+        opacity: 1;
+        background: @hover_bg;
+    }
+}
+
+.AnonId_dialogFrame .AnonId_dialogTitle {
+    display: block;
+    font-size: unit(15 * @dp, em);
+    font-weight: 900;
+    color: rgba(0, 0, 0, 0.4);
+    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.6);
+
+    padding-right: 1em;
+}
+.AnonId_dialogFrame .AnonId_dialogSubTitle {
+    color: #000;
+    display: block;
+    opacity: 0.7;
+}
+
+.AnonId_dialogFrame .AnonId_dialogBody {
+    padding: unit(16 * @dp, em);
+    border-top: solid 1px rgba(255, 255, 255, 0.2);
+}
+.AnonId_dialogFrame .AnonId_dialogFooter {
+    padding: unit(12 * @dp, em);
+    margin-top: 0em;
+}
+.AnonId_dialogFooter > hbox > * + * {
+    margin-left: unit(12 * @dp, em);
+}
+
+.AnonId_dialogFooter button {
+    min-width: unit(64 * @dp, em);
+    display: inline-block;
+
+    &[mode="cancel"] {
+        background: @danger_button_color;
+        color: @danger_button_text_color;
+
+        &:focus {
+            background-color: shade(@danger_button_color, 20%);
+        }
+    }
+}
+
+
+.AnonId_dialogFrame .MessageDialog > icon {
+    font-size: 3em;
+    opacity: 0.54;
+}
+
+.AnonId_dialogFrame .MessageDialog .Messages {
+    margin-left: 2em;
+    word-break: break-word;
+}
+.AnonId_dialogFrame .MessageDialog .Messages p {
+    margin-top: 0.5em;
+}
+
+.AnonId_dialogFrame .WizardContent {
+    /*position: relative;
+    border: solid 1px #DDDDDD;
+    border-top: none;
+    background: #FAFAFA;
+    box-sizing: content-box;*/
+    position: relative;
+    background: #FAFAFA;
+    box-sizing: content-box;
+}
+.AnonId_dialogFrame .WizardContent > .WizardPane {
+    position: absolute;
+    visibility: hidden;
+    padding: 0.7em;
+    left: 0px;
+    top: 0px;
+}
+.AnonId_dialogFrame .WizardContent > .WizardPane.Measured {
+    right: 0px;
+    bottom: 0px;
+}
+.AnonId_dialogFrame .WizardContent > .ActiveWizardPane {
+    visibility: inherit;
+}
+
+
+.AnonId_dialogFrame .SelectDialog {
+    &.HasMessage {
+        margin-left: 1em;
+    }
+
+    & > hbox {
+        align-items: center;
+        & + hbox {
+            margin-top: 0.3em;
+        }
+    }
+}
+
+/* Tree */
+@tree-item-height: unit(@default-line-height + 4 * @dp, em);
+.widget_Tree {
+    padding: 0.5em;
+}
+.widget_Tree label {
+    margin-bottom: 0px;
+    font-weight: normal;
+}
+.widget_Tree .ItemText {
+    box-sizing: border-box;
+}
+.widget_Tree .ItemText label {
+    display: inline-block;
+    line-height: @tree-item-height;
+    padding: 0em 0.4em;
+}
+.widget_Tree .ItemText.Selected label {
+    border-radius: unit(2 * @dp, em);
+    background: @primary_color;
+    color: @inverted_text_color;
+}
+.widget_Tree .SelectableItem * {
+    cursor: default;
+}
+.widget_Tree .SelectableItem:hover label {
+    background: @hover_bg;
+}
+.widget_Tree .SelectableItem.Selected:hover label {
+    background: darken(@primary_color, 10%);
+}
+
+.widget_Tree .ItemText.Disabled label {
+    opacity: 50%;
+}
+
+.widget_Tree .Title .ItemText {
+    display: inline;
+}
+.widget_Tree .Title {
+    white-space: nowrap;
+    padding: 0.1em 0em;
+}
+.widget_Tree .IconicLabel * {
+    vertical-align: middle;
+}
+.widget_Tree .IconicLabel img {
+    width: 1em;
+    height: 1em;
+}
+
+.widget_Tree .Title * {
+    vertical-align: middle;
+}
+.widget_Tree .Title .Checkbox::before {
+    line-height: @tree-item-height / unit(@checkbox-font-size);
+    height: @tree-item-height / unit(@checkbox-font-size);
+}
+.widget_Tree .NoChild .Chevron icon:before {
+    visibility: hidden;
+}
+.widget_Tree .Title .Chevron icon:before {
+    margin-top: (@tree-item-height - 1em) / 2;
+    transform: rotate(0deg) scale(1.5);
+    transition: transform 0.1s ease;
+}
+
+.widget_Tree .ExpandedTitle .Chevron icon:before {
+    transform: rotate(90deg) scale(1.5);
+}
+.widget_Tree .Title .Chevron {
+    font-size: 1em;
+    padding: 0em 0.3em;
+    cursor: pointer;
+    color: #777;
+}
+.widget_Tree .Children {
+    padding-left: 1em;
+}
+.widget_Tree .RootChildren {
+    padding-left: 0px;
+}
+.widget_Tree .CollapsedChildren {
+    display: none;
+}
+.widget_Tree .Checkbox {
+    display: none;
+}
+.widget_Tree .Children .Children {
+    position: relative;
+}
+.widget_Tree .Children .Children .Title {
+    position: relative;
+}
+.widget_Tree .Children .Children .NoChild:before {
+    width: 1.6em;
+}
+.widget_Tree .Children .Children .LastChild {
+    position: relative;
+}
+
+.CheckableTree .Checkbox {
+    display: inline;
+}
+.FamilyNotMSIE .CheckableTree .Checkbox {
+}
+.CheckableTree .Checkbox[disabled] {
+    opacity: 0.4;
+}
+
+/* Action Bar */
+@toolbar-button-background: rgba(0, 0, 0, 0.03);
+.widget_ActionBar > hbox + hbox {
+    margin-left: 0.5em;
+}
+.widget_ActionBar button {
+    padding: 0.4em 0.6em;
+    text-align: center;
+    min-width: 1.4em;
+    box-sizing: content-box;
+    border-radius: unit(4 * @dp, em);
+}
+.widget_ActionBar button + button {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+.widget_ActionBar button:not(:last-child) {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+.widget_ActionBar button:not(:focus) {
+    background: @toolbar-button-background;
+}
+
+/* Paginator */
+.widget_Paginator button.active {
+    background-color: @hover_bg;
+    font-weight: 900;
+}
+
+/* SplitView */
+
+.SplitViewSplitter {
+    cursor: ew-resize;
+}
+.SplitViewSplitter div {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    width: 4px;
+    bottom: -20px;
+    margin-left: -2px;
+}
+.SplitViewSplitter div.Kept,
+.SplitViewSplitter:hover div,
+.SplitViewSplitter:active div {
+    background: rgba(0, 0, 0, 0.1);
+}
+.SplitViewHeld .SplitViewSplitter div {
+    background: rgba(33, 66, 99, 0.6);
+}
+.SplitViewBOTH #dataContainer {
+    border-right: solid 2px transparent;
+}
+.SplitViewBOTH #mapContainerWrapper {
+    border-left: solid 2px transparent;
+}
+
+/* Snackbar */
+.widget_SnackBar {
+    background: rgba(0, 0, 0, 0.8);
+    color: #FFF;
+
+    &.Floating {
+        .z-depth(4);
+    }
+
+    & .AnonId_extraMessage {
+        max-width: 24em;
+        opacity: 0.8;
+    }
+
+    &.WithExtraMessage .AnonId_icon {
+        align-self: flex-start;
+    }
+}

@@ -3,10 +3,37 @@
 <head>
 	<title>Socket.IO chat</title>
     <link rel="stylesheet" href="style.css"/>
-    <script type="text/javascript" src="/util/common-net.js"></script>
-    <script type="text/javascript" src="/registry.js";
+    <script type="text/javascript" src="/framework/common-net.js"></script>
+    <script type="text/javascript" src="/registry.js"></script>
+    <script type="text/javascript" src="/framework/common-dom.js"></script>
     <script>
+        function requestUserList() {
+            $user.getAllUser((data) => {
+                    console.log("response", data);
+                    var container = document.getElementById("dataContainer");
+                    data.data.forEach(function(user) {
+                        container.appendChild(Dom.newDOMElement({
+                            _name: "div",
+                            _children: [
+                                {_name: "span", _text: "Email:"},
+                                {_name: "span", _text: user.email}
+                            ]
+                        }));
+                        container.appendChild(Dom.newDOMElement({
+                            _name: "div",
+                            _children: [
+                                { _name: "span", _text: "User name:" },
+                                { _name: "span", _text: "user.name" }
+                            ]
+                        }));
+                    });
+                },
+                (error) => {
+                    console.log("error:", error);
+                });
+        }
         document.addEventListener("DOMContentLoaded", function(event) {
+            requestUserList();
             var form = document.getElementById("form");
             if (!form) return;
             console.log("form", form);
@@ -15,7 +42,7 @@
                 console.log("submit", form.name.value, form.email.value);
                 CommonNet.get(form.action, {name: form.name.value, email: form.email.value}, (data) => {}, (error) => {});
             });
-        })
+        });
     </script>
 </head>
 <body>
@@ -24,6 +51,7 @@
         <input type="text" name="email" placeholder="email" />
         <input type="submit" value="submit"/>
     </form>
+    <div id="dataContainer"></div>
 </body>
 </html>
 

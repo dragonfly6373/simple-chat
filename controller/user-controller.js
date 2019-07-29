@@ -2,7 +2,6 @@ var db = require("../mongodb/database.js");
 var User = require("../mongodb/dao/user.js");
 
 function createUser(data, callback) {
-    console.log("create user data:", data);
     db.create(User, data, function(error) {
         if (error) callback({error: error});
         else callback({message : "New User created successfully"});
@@ -24,7 +23,6 @@ function updateUser(id, data, callback) {
 }
 
 function getAllUser(callback) {
-    console.log("callback:", typeof(callback), callback);
     db.getAll(User, {}, function(error, users) {
         if (error) callback({error: error});
         else callback({data: users});

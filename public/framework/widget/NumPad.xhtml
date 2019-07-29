@@ -1,0 +1,35 @@
+<vbox xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://evolus.vn/Namespaces/WebUI/1.0">
+    <style>
+        .PadCell {
+            flex: 1;
+            margin: 0.2em;
+            border: 1px solid #444;
+            box-shadow: 3px 3px 2px 0px #444;
+            background-color: #44F;
+            color: #FFF;
+            font-weight: bold;
+        }
+        .PadCell.Grow2 {
+            flex: 2.3;
+        }
+    </style>
+    <hbox flex="1">
+        <button class="PadCell" anon-id="padSeven">7</button>
+        <button class="PadCell" anon-id="padEight">8</button>
+        <button class="PadCell" anon-id="padNine">9</button>
+    </hbox>
+    <hbox flex="1">
+        <button class="PadCell" anon-id="padFour">4</button>
+        <button class="PadCell" anon-id="padFive">5</button>
+        <button class="PadCell" anon-id="padSix">6</button>
+    </hbox>
+    <hbox flex="1">
+        <button class="PadCell" anon-id="padOne">1</button>
+        <button class="PadCell" anon-id="padTwo">2</button>
+        <button class="PadCell" anon-id="padThree">3</button>
+    </hbox>
+    <hbox flex="1">
+        <button class="PadCell" anon-id="padZero">0</button>
+        <button class="PadCell Grow2" anon-id="padDot">.</button>
+    </hbox>
+</vbox>

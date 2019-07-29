@@ -1,0 +1,103 @@
+<vbox xmlns:ui="http://evolus.vn/Namespaces/WebUI/1.0">
+    <style>
+        @this {
+            & input + label {
+                white-space: nowrap;
+            }
+            & @statusBox {
+                font-size: 1em;
+                white-space: nowrap;
+                text-align: left;
+                position: relative;
+
+                & @statusItem {
+                    display: inherit;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    padding-right: 1em;
+                }
+            }
+            &:not(.dropdown) {
+                & @statusBox {
+                    display: none;
+                }
+                & @optionBox {
+                    display: flex;
+                    & > .OptionContainer > * {
+                        cursor: pointer;
+                    }
+                    &.VBox {
+                        flex-direction: column;
+                    }
+                    &.HBox {
+                        flex-direction: row;
+
+                        & > .OptionContainer {
+                            align-items: center;
+                        }
+                        & hbox:not(:first-child) {
+                            margin-left: 1em;
+                        }
+                    }
+                }
+            }
+            & @popupContainer {
+                display: none;
+            }
+        }
+        body > div > @optionBox{
+            overflow-y: auto;
+            overflow-x: hidden;
+            & > hr {
+                border: none;
+                border-top: solid 0.133333334em rgba(0, 0, 0, 0.12);
+                height: 0.133333334em;
+                box-sizing: border-box;
+                margin: 0;
+            }
+            & hbox.OptionContainer {
+                padding: 0.5em 0.8em;
+                align-items: center;
+                overflow: hidden;
+                &.Hidden {
+                    display: none;
+                }
+                &:hover {
+                    background-color: #EEE;
+                }
+                &.Focus {
+                    background-color: fade(@primary_color, 40%);
+                }
+                & > * {
+                    cursor: pointer;
+                }
+                & > input[type="radio"]::before {
+                    content: "\F12C";
+                    opacity: 0;
+                }
+                & > input[type="radio"]:checked::before {
+                    content: "\F12C";
+                    opacity: 1;
+                }
+                & > input[type="checkbox"]::before {
+                    content: "\F131";
+                }
+                & > input[type="checkbox"]:checked::before {
+                    content: "\F135";
+                }
+                & > label {
+                    margin-left: 0.5em;
+                    margin-right: 0.5em;
+                    #sys-ellipsize();
+                    flex: 1;
+                }
+            }
+        }
+    </style>
+    <button anon-id="statusBox" class="widget_ComboManager">
+        <span anon-id="statusItem" flex="1"></span><icon class="menu-down"></icon>
+    </button>
+    <ui:Popup anon-id="popupContainer" verticalScroll="true" />
+    <div anon-id="optionBox" class="OptionBox"></div>
+</vbox>
