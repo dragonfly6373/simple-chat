@@ -41,9 +41,14 @@ var CommonNet = (function () {
             if (mime) request.overrideMimeType(mime);
             request.open(method, url);
             if (method == "POST") {
-                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                var data = JSON.stringify(params);
+                console.log("POSTED data: ", data);
+                request.send(data);
+            } else {
+                // request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                request.send(body);
             }
-            request.send(isGet ? null : body);
             if (listener) listener.busy();
         };
     }
@@ -54,6 +59,7 @@ var CommonNet = (function () {
                 var api = window["$" + api_name];
                 api[service] = function() {
                     var requiredParams = window._registry[api_name][service];
+                    var method = requiredParams.splice(0, 1)[0];
                     if (arguments.length != requiredParams.length + 2) {
                         console.error("service " + api_name + "." + service + " missing parameters: require "
                             + (requiredParams.length + 2)
@@ -64,7 +70,11 @@ var CommonNet = (function () {
                     for (var p in requiredParams) {
                         params[requiredParams[p]] = arguments[p];
                     }
-                    CommonNet.get(api_name + "/" + service, params, arguments[requiredParams.length], arguments[requiredParams.length + 1]);
+                    if (method.toUpperCase() == "POST") {
+                        CommonNet.post(api_name + "/" + service, params, arguments[requiredParams.length], arguments[requiredParams.length + 1]);
+                    } else {
+                        CommonNet.get(api_name + "/" + service, params, arguments[requiredParams.length], arguments[requiredParams.length + 1]);
+                    }
                 }
             });
         });

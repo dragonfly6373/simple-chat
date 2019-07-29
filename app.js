@@ -8,9 +8,12 @@ var session = require('express-session');
 
 var properties = require('./properties.js');
 // var router = require('./routes.js');
+var db = require('./mongodb/database.js');
+db.connect();
+console.log("DB", typeof(db), db);
 
 app.use(session({secret: 'keyboard cat', cookie: {maxAge: 60000}}));
-
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res, next) => {

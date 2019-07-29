@@ -1,25 +1,22 @@
-var DataAdapter = require("../mongodb/database.js");
-var User = require("../mongodb/model/User.js");
-var mongoose = require("mongoose");
-var Schema = mongoose.Schema;
+var db = require("../mongodb/database.js");
+var User = require("../mongodb/dao/user.js");
+
 function createUser(data, callback) {
-    db = new DataAdapter();
+    console.log("create user data:", data);
     db.create(User, data, function(error) {
-        if (err) callback({error: error});
+        if (error) callback({error: error});
         else callback({message : "New User created successfully"});
     });
 }
 
 function getUserInfo(id, callback) {
-    db = new DataAdapter();
     db.getById(User, id, function(error, user) {
-        if (error) callback({ error: error });
+        if (error) callback({error: error});
         else callback(user);
     });
 }
 
-function updateUser(id, callback) {
-    db = new DataAdapter();
+function updateUser(id, data, callback) {
     db.updateById(User, id, data, function(error, user) {
         if (error) callback({error: error});
         else callback(user);
@@ -27,20 +24,14 @@ function updateUser(id, callback) {
 }
 
 function getAllUser(callback) {
-    db = new DataAdapter();
-    console.log("db", typeof(db));
+    console.log("callback:", typeof(callback), callback);
     db.getAll(User, {}, function(error, users) {
         if (error) callback({error: error});
         else callback({data: users});
     });
-    // User.getAll({}, function(error, users) {
-    //     if (error) calback({error: error});
-    //     else callback({data: users});
-    // });
 }
 
 function deleteUser(id, callback) {
-    db = new DataAdapter();
     db.deleteById(User, id, function(error, user) {
         if (error) callback({error: error});
         else callback(user);
@@ -48,9 +39,9 @@ function deleteUser(id, callback) {
 }
 
 module.exports = {
-    createUser: createUser,
-    getUserInfo: getUserInfo,
-    updateUser: updateUser,
-    getAllUser: getAllUser,
-    deleteUser: deleteUser
+    createUser: {method: "post", implementation: createUser},
+    updateUser: {method: "post", implementation: updateUser},
+    deleteUser: {method: "post", implementation: deleteUser},
+    getUserInfo: {method: "get", implementation: getUserInfo},
+    getAllUser: {method: "get", implementation: getAllUser}
 };
