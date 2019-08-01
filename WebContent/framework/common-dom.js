@@ -1389,3 +1389,5 @@ function tryNavSpecHandlers() {
     }
 }
 Dom.registerEvent(window, "load", tryNavSpecHandlers, false);
+
+var _pkg = {};

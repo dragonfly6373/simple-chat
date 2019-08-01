@@ -59,21 +59,22 @@ var CommonNet = (function () {
                 var api = window["$" + api_name];
                 api[service] = function() {
                     var requiredParams = window._registry[api_name][service];
-                    var method = requiredParams.splice(0, 1)[0];
-                    if (arguments.length != requiredParams.length + 2) {
+                    var method = requiredParams[0];
+                    method = method[0];
+                    if (arguments.length != requiredParams.length + 1) {
                         console.error("service " + api_name + "." + service + " missing parameters: require "
-                            + (requiredParams.length + 2)
+                            + (requiredParams.length + 1)
                             + " but got " + arguments.length);
                         return;
                     }
                     var params = {};
-                    for (var p in requiredParams) {
+                    for (var i = 1; i < requiredParams.length; i++) {
                         params[requiredParams[p]] = arguments[p];
                     }
                     if (method.toUpperCase() == "POST") {
-                        CommonNet.post(api_name + "/" + service, params, arguments[requiredParams.length], arguments[requiredParams.length + 1]);
+                        CommonNet.post(api_name + "/" + service, params, arguments[requiredParams.length - 1], arguments[requiredParams.length]);
                     } else {
-                        CommonNet.get(api_name + "/" + service, params, arguments[requiredParams.length], arguments[requiredParams.length + 1]);
+                        CommonNet.get(api_name + "/" + service, params, arguments[requiredParams.length -1 ], arguments[requiredParams.length]);
                     }
                 }
             });

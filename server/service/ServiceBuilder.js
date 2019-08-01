@@ -1,8 +1,8 @@
 module.exports = (function() {
     var _services = {};
-    function buildRouting(api_name, controller) {
+    function buildRouting(api_name, method, controller) {
         var params = [];
-        var matching = controller.implementation.toString().match(/^function\s*(\w+)\s*\(([\w]+[,\s*\w+]*)\)/);
+        var matching = controller.toString().match(/^function\s*(\w+)\s*\(([\w]+[,\s*\w+]*)\)/);
         var fnName = matching[1];
         if (matching && matching.length > 2) {
             params = matching[2].split(",");
@@ -10,10 +10,10 @@ module.exports = (function() {
         }
         if (!_services[api_name]) _services[api_name] = {};
         var api = _services[api_name];
-        console.log("### init API: ", api_name, fnName, params);
+        console.log("### init API:", api_name, fnName, params);
         if (!api[fnName]) api[fnName] = [];
         var service = api[fnName];
-        service.push(controller.method);
+        service.push(method);
         for (var i in params) {
             service.push(params[i]);
         }
@@ -25,7 +25,7 @@ module.exports = (function() {
             values.push(function(result) {
                 res.json(result);
             });
-            controller.implementation.apply(null, values);
+            controller.apply(null, values);
         };
     }
     return {
@@ -35,11 +35,15 @@ module.exports = (function() {
         register: function(api_name, router, controllers) {
             Object.getOwnPropertyNames(controllers).forEach(function(name) {
                 var controller = controllers[name];
-                if (typeof(controller.implementation) !== "function") return;
+                if (typeof(controllers) === "function") {
+                    router.get("/" + name, buildRouting(api_anme, "GET", controller));
+                    return;
+                }
+                if (typeof(controllers) === "object" && typeof(controller.implementation) !== "function") return;
                 if (controller.method.toUpperCase() == "POST") {
-                    router.post("/" + name, buildRouting(api_name, controller));
+                    router.post("/" + name, buildRouting(api_name, "POST", controller.implementation));
                 } else {
-                    router.get("/" + name, buildRouting(api_name, controller));
+                    router.get("/" + name, buildRouting(api_name, "GET", controller.implementation));
                 }
             });
         }

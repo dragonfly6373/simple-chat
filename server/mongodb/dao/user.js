@@ -24,5 +24,4 @@ schema.statics = {
     }
 };
 
-var model = mongoose.model(dto.name, schema);
-module.exports = model;
+module.exports = mongoose.model(dto.name, schema);

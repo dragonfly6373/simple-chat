@@ -3,18 +3,27 @@ var app = express();
 var path = require('path');
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
+var cookieParser = require('cookie-parser');
 var session = require('express-session');
 // var redisAdapter = require('socket.io-redis');
 
-var properties = require('./properties.js');
-// var router = require('./routes.js');
-var db = require('./mongodb/database.js');
+var CONTEXT = require('server');
+var properties = CONTEXT.properties;
+
+var db = CONTEXT.mongodb;
+var serviceBuilder = CONTEXT.serviceBuilder;
+
+var controller = CONTEXT.controller;
+var userController = controller.user;
+var chatController = controller.chat;
+
 db.connect();
 console.log("DB", typeof(db), db);
 
-app.use(session({secret: 'keyboard cat', cookie: {maxAge: 60000}}));
+app.use(cookieParser());
+app.use(session({secret: 'secret is secret', cookie: {maxAge: 60000}}));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'WebContent/public')));
 
 app.get('/', (req, res, next) => {
 	res.sendFile(path.join(__dirname, 'index.html'));
@@ -25,17 +34,13 @@ app.get('/chat', (req, res) => {
 	res.sendFile(path.join(__dirname, 'public/ChatClient.html'));
 });
 
-var serviceBuilder = require('./service/ServiceBuilder.js');
-
-var userController = require('./controller/user-controller.js');
 var userApi = express.Router();
 app.use('/user', userApi);
 serviceBuilder.register('user', userApi, userController);
 
-// var chatController = require('./controller/chat-controller.js');
-// var chatApi = express.Router();
-// serviceBuilder.register('chat', chatApi, chatController);
-// app.use('/chat', chatApi);
+var chatApi = express.Router();
+app.use('/chat', chatApi);
+serviceBuilder.register('chat', chatApi, chatController);
 
 app.get('/registry.js', (req, res) => {
 	res.send("window._registry = " + JSON.stringify(serviceBuilder.getAPIs()) + ";\nCommonNet.initServices(window._registry);");
