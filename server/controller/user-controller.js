@@ -37,9 +37,9 @@ function deleteUser(id, callback) {
 }
 
 module.exports = {
-    createUser: {method: "post", implementation: createUser},
-    updateUser: {method: "post", implementation: updateUser},
-    deleteUser: {method: "post", implementation: deleteUser},
-    getUserInfo: {method: "get", implementation: getUserInfo},
-    getAllUser: {method: "get", implementation: getAllUser}
+    createUser: {method: "post", implementation: createUser, authentication: function(req, res) { return true; }},
+    updateUser: {method: "post", implementation: updateUser, authentication: function(req, res) { return true; }},
+    deleteUser: {method: "post", implementation: deleteUser, authentication: function(req, res) { return true; }},
+    getUserInfo: {method: "get", implementation: getUserInfo, authentication: function(req, res) { return true; }},
+    getAllUser: {method: "get", implementation: getAllUser, authentication: function(req, res) { return true; }}
 };

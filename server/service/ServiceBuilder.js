@@ -1,6 +1,6 @@
 module.exports = (function() {
     var _services = {};
-    function buildRouting(api_name, method, controller) {
+    function buildRouting(api_name, method, controller, authentication) {
         var params = [];
         var matching = controller.toString().match(/^function\s*(\w+)\s*\(([\w]+[,\s*\w+]*)\)/);
         var fnName = matching[1];
@@ -25,7 +25,19 @@ module.exports = (function() {
             values.push(function(result) {
                 res.json(result);
             });
-            controller.apply(null, values);
+            if (authentication && typeof(authentication) === "function") {
+                var result = authentication(req, res);
+                if (!result) res.json({error: "You are un-authorize to access data. Login with other account and try again."});
+                else controller.apply(null, values);
+            } else if (authentication && typof(authentication.then) === "function") {
+                authentication(req, res).then(function(result) {
+                        if (!result) res.json({error: "You are un-authorize to access data. Login with other account and try again."});
+                        else controller.apply(null, values);
+                    })
+                    .catch(function(error) {
+                        res.json({error: "You are un-authorize to access data. Login with other account and try again."});
+                    });
+            }
         };
     }
     return {
@@ -36,14 +48,14 @@ module.exports = (function() {
             Object.getOwnPropertyNames(controllers).forEach(function(name) {
                 var controller = controllers[name];
                 if (typeof(controllers) === "function") {
-                    router.get("/" + name, buildRouting(api_anme, "GET", controller));
+                    router.get("/" + name, buildRouting(api_name, "GET", controller, null));
                     return;
                 }
                 if (typeof(controllers) === "object" && typeof(controller.implementation) !== "function") return;
                 if (controller.method.toUpperCase() == "POST") {
-                    router.post("/" + name, buildRouting(api_name, "POST", controller.implementation));
+                    router.post("/" + name, buildRouting(api_name, "POST", controller.implementation, controller.authentication));
                 } else {
-                    router.get("/" + name, buildRouting(api_name, "GET", controller.implementation));
+                    router.get("/" + name, buildRouting(api_name, "GET", controller.implementation, controller.authentication));
                 }
             });
         }

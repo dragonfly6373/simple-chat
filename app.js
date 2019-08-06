@@ -21,7 +21,7 @@ db.connect();
 console.log("DB", typeof(db), db);
 
 app.use(cookieParser());
-app.use(session({secret: 'secret is secret', cookie: {maxAge: 60000}}));
+app.use(session({secret: 'secret is secret', cookie: {maxAge: 3600000}}));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'WebContent/public')));
 

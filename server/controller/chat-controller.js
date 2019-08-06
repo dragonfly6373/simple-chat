@@ -9,11 +9,26 @@ function createRoom(data, callback) {
     });
 }
 
+function friendReques(id, callback) {
+    
+}
+
 function joinChat(id, callback) {
     db.updateById(User, id, {$set: {dt_last_login: new Date()}}, function(error, user) {
         if (error) callback({error: error});
         else callback(user);
     });
+}
+
+function getGroupInfo(id, callback) {
+    db.getById(Room, id, function(error, data) {
+        if (error) callback({error: error});
+        else callback(data);
+    });
+}
+
+function kickUser(id, callback) {
+    // only room admin can perform
 }
 
 function sendMessageTo(from, to, message, callback) {
@@ -32,6 +47,7 @@ module.exports = {
     createRoom: {method: "get", implementation: createRoom},
     joinChat: {method: "get", implementation: joinChat},
     sendMessageTo: {method: "get", implementation: sendMessageTo},
+    getGroupInfo: {method: "get", implementation: getGroupInfo},
     getGroupMembers: {method: "get", implementation: getGroupMembers},
     searchLog: {method: "get", implementation: searchLog}
 };

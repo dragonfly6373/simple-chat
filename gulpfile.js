@@ -39,7 +39,9 @@ function _frameworkstyle() {
     return src('WebContent/framework/style/**/*')
         .pipe(dest(path.join(DIST_PATH, 'framework/style')));
 }
-exports.framework = parallel(_frameworkWidget, _commonDom, _frameworkstyle);
+
+var _framework = parallel(_frameworkWidget, _commonDom, _frameworkstyle);
+exports.framework = _framework;
 
 function _component(cb) {
     function listDir(dir) {
@@ -72,10 +74,17 @@ function _component(cb) {
                     }}))
                     // .pipe(uglify())
                     .pipe(dest(path.join(DIST_PATH, 'component', folder)))
-                    .pipe(src(path.join('component', folder, '*.xhtml')))
+                    .pipe(src(path.join(SRC_PATH, folder, '*.xhtml')))
                     .pipe(dest(path.join(DIST_PATH, 'component', folder)))
                     .on('end', onDone);
     });
     return es.concat.apply(null, js_pack);
 }
 exports.component = _component;
+
+exports.clean = function() {
+    return src(path.join(DIST_PATH, '*'), {read: false})
+        .pipe(clean({force: true}));
+}
+
+exports.install = parallel(_framework, _component);
