@@ -2,9 +2,23 @@ var db = require("../mongodb/database.js");
 var User = require("../mongodb/dao/user.js");
 
 function createUser(data, callback) {
-    db.create(User, data, function(error) {
-        if (error) callback({error: error});
-        else callback({message : "New User created successfully"});
+    db.getAll(User, {email: data.email}, function(error, data) {
+        if (error || data.length) callback({error: "Fail to create user data. Please check your in put email and try again."});
+        else {
+            db.create(User, data, function(error) {
+                if (error) callback({error: error});
+                else callback({message : "New User created successfully"});
+            });
+        }
+    });
+}
+
+function login(email, password, callback) {
+    db.getAll(User, {email: email, password: password}, function(error, data) {
+        if (error || data.length == 0) callback({error: "Login fail! Please check your email and password and try again."});
+        else {
+            callback({user_info: data[0]});
+        }
     });
 }
 
@@ -37,9 +51,10 @@ function deleteUser(id, callback) {
 }
 
 module.exports = {
-    createUser: {method: "post", implementation: createUser, authentication: function(req, res) { return true; }},
-    updateUser: {method: "post", implementation: updateUser, authentication: function(req, res) { return true; }},
-    deleteUser: {method: "post", implementation: deleteUser, authentication: function(req, res) { return true; }},
-    getUserInfo: {method: "get", implementation: getUserInfo, authentication: function(req, res) { return true; }},
-    getAllUser: {method: "get", implementation: getAllUser, authentication: function(req, res) { return true; }}
+    createUser: {method: "post", implementation: createUser, authentication: function(req) { return true; }},
+    updateUser: {method: "post", implementation: updateUser, authentication: function(req) { return true; }},
+    deleteUser: {method: "post", implementation: deleteUser, authentication: function(req) { return true; }},
+    login: {method: "post", implementation: login, authentication: function(req) { return true; }},
+    getUserInfo: {method: "get", implementation: getUserInfo, authentication: function(req) { return true; }},
+    getAllUser: {method: "get", implementation: getAllUser, authentication: function(req) { return true; }}
 };

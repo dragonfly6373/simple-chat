@@ -4,9 +4,8 @@
   "description": "simple chat",
   "main": "index.js",
   "scripts": {
-    "test": "node app.js",
-    "start": "nodemon app.js",
-    "preinstall": "rm-local-modules"
+    "start": "node app.js",
+    "test": "nodemon app.js"
   },
   "keywords": [
     "websocket",

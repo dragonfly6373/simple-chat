@@ -3,7 +3,7 @@ var dbUrl = require("../properties.js").DB;
 
 module.exports.connect  = function() {
     console.log("# mongodb try to connect", dbUrl);
-    mongoose.connect(dbUrl, {useNewUrlParser: true});
+    mongoose.connect(dbUrl, {server:{auto_reconnect:true}, useNewUrlParser: true});
     mongoose.connection.on('connected', function(){
         console.log("Mongoose default connection is open to ", dbUrl);
     });

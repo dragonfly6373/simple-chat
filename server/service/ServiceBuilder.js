@@ -26,7 +26,7 @@ module.exports = (function() {
                 res.json(result);
             });
             if (authentication && typeof(authentication) === "function") {
-                var result = authentication(req, res);
+                var result = authentication(req);
                 if (!result) res.json({error: "You are un-authorize to access data. Login with other account and try again."});
                 else controller.apply(null, values);
             } else if (authentication && typof(authentication.then) === "function") {

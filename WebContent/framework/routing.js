@@ -4,52 +4,46 @@ function __setHash(widget) {
     var hash = widget.getHash();
 }
 
-var NavigationModule = function() {
-
-}
-
-NavigationModule.prototype.navigate = function(hash) {
-    
-}
-
-NavigationModule.__proto__ = function() {
-    var _register = {};
+var NavigationModule = (function() {
     var _viewer = null;
-    function register(name, widget) {
-        console.log("register new hash:", name);
-        if (_register.name != null) {
-            _register.name = widget;
-        }
-    }
-    function setView(node) {
+    var _currentActive = null;
+    function setViewer(node) {
         _viewer = node;
     }
-    function implement(hash, options) {
-        var impl = _register[hash];
-        if (!_viewer) console.log("set view first");
-        if (!hash) {
-            console.log("page not be found with hash", hash);
+    function implement(feature, options) {
+        if (!_viewer) {
+            console.log("set view first");
+            return;
         }
-        impl = new impl(options);
+        var hash = feature.name;
+        var impl = new feature.implemenation(options);
         _viewer.innerHTML = "";
         impl.into(_viewer);
     }
+    function hashChange(oldHash, newHash) {
+
+    }
 
     return {
-        register: register,
         setView: setView,
-        implement: implement
+        implement: implement,
+        hashChange: hashChange
     };
-};
+})();
 
 (function(){
     var lastURL = document.URL;
     console.log("# Catch HashChange event");
+    function getHash(url) {
+        var matching = url.match(/#\/([\w+[\/w+]*)/);
+        if (!matching || matching.length < 2) return "";
+        return matching[1];
+    }
     window.addEventListener("hashchange", function(event){
         Object.defineProperty(event, "oldURL", {enumerable:true, configurable:true,value:lastURL});
         Object.defineProperty(event, "newURL", {enumerable:true, configurable:true,value:document.URL});
         lastURL = document.URL;
-        console.log("Old URL:", event.oldURL);
-        console.log("New URL:", event.newURL);
+        console.log("Old hash:", getHash(event.oldURL));
+        console.log("New hash:", getHash(event.newURL));
     });
 }());
