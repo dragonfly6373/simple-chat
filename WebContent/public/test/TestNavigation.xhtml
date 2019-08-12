@@ -1,0 +1,25 @@
+<vbox>
+    <style>
+        @this {
+            & .TabHeader > * {
+                padding: 0.5em 1em;
+                background: #888;
+            }
+            & .TabBodyContainer > *:not(.Active) {
+                display: none;
+            }
+        }
+    </style>
+    <vbox>
+        <hbox class="TabHeader" anon-id="tabHeaderContainer">
+            <span anon-id="tab1" for-name="body1">Tab 1</span>
+            <span anon-id="tab2" for-name="body2">Tab 2</span>
+            <span anon-id="tab3" for-name="body3">Tab 3</span>
+        </hbox>
+        <vbox class="TabBodyContainer" anon-id="tabBodyContainer">
+            <vbox anon-id="body1">body1</vbox>
+            <vbox anon-id="body2">body2</vbox>
+            <vbox anon-id="body3">body3</vbox>
+        </vbox>
+    </vbox>
+</vbox>
