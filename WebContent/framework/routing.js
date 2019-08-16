@@ -1,81 +1,95 @@
-// if (!window.HashChangeEvent)
-
-function __setHash(widget) {
-    var hash = widget.getHash();
-}
 
 var NavigationModule = (function() {
-    var _viewer = null;
-    var _root = null;
-    var _currentActive = null;
-    var _currentHash = "";
-    var _index = 0;
-    function setViewer(node) {
-        _viewer = node;
-    }
-    function implement(feature, options) {
-        if (!_viewer) {
-            console.log("set view first");
-            return;
-        }
-        var hash = feature.name;
-        var impl = new feature.implemenation(options);
-        _viewer.innerHTML = "";
-        impl.into(_viewer);
-    }
-    function appendHash(name) {
-        _currentHash += name;
-        window.location.hash(_currentHash);
-    }
-    function hashChange(oldHash, newHash) {
-        console.log("Old hash:", oldUrl);
-        console.log("New hash:", newUrl);
-        var oldHash = oldUrl.split("/");
-        var newHash = newUrl.split("/");
-    }
-    function setup(component) {
-        if (!_currentActive.children) _currentActive.children = [];
-        _currentActive.children.push(component);
-        component.parent = _currentActive;
-    }
-    function setRoot(component, moduleName) {
-        var routing = component.getNavigationModules();
-        if (!routing) return;
+    var ROOT = {
+        _modules: {},
+        _currentActive: null,
+        _currentHash: []
+    };
+    function _implement(navModule, hashArrs) {
+        var moduleName = hashArrs[0];
+        var routing = navModule.component.getNavigationModules();
+        if(!routing) return;
         var module = routing.modules.reduce(function(a, c) {
             if (moduleName && c.name == moduleName) return c;
             if (!moduleName && c.defaultActive) return c;
             return a;
         }, null);
-        if (module) _currentActive = {name: moduleName, module: module};
+        if (!module) return;
+        console.log("navModule", routing);
         if (routing.onNavigate) routing.onNavigate(module);
-        if (routing.viewer && module.implemenation) {
-            var imp = new module.implementation();
-            imp.into(routing.viewer);
+        else if (routing.viewer && module.implementation) {
+            routing.viewer.innerHTML = "";
+            var impl = new module.implementation();
+            impl.into(routing.viewer);
+            // return impl;
+        }
+        if (hashArrs.length > 1) {
+            if (!navModule.next || navModule.next.hash != hashArrs[0]) {
+                _implement(navModule, hashArrs.slice(1));
+                break;
+            } else {
+                console.log("implemented", navModule.hash);
+                navModule = navModule.next;
+            }
         }
     }
-
-    return {
-        setViewer: setViewer,
-        implement: implement,
-        hashChange: hashChange,
-        setRoot: setRoot
-    };
-})();
-
-(function(){
-    var lastURL = document.URL;
-    console.log("# Catch HashChange event");
     function getHash(url) {
         var matching = url.match(/#\/([\w+[\/w+]*)/);
         if (!matching || matching.length < 2) return "";
         return matching[1];
     }
-    window.addEventListener("hashchange", function(event) {
+    function onHashChange(oldUrl, newUrl) {
+        console.log("HashChange: Old hash:", oldHash, " --New hash:", newHash);
+        var oldHash = oldUrl.split("/");
+        var newHash = newUrl.split("/");
+        var pointer = _root;
+        if (newHash.length > 1) {
+            if (!pointer.next || pointer.next.hash != newHash[0]) {
+                _implement(pointer, newHash.slice(1));
+                break;
+            } else {
+                console.log("implemented", pointer.hash);
+                pointer = pointer.next;
+            }
+        }
+    }
+    function setRoot(component) {
+        console.log("NavigationModule setRoot", component.name);
+        var routing = component.getNavigationModules();
+        if (!routing) return;
+        ROOT._modules = {hash: "", component: component};
+        ROOT._currentActive = _root;
+        ROOT._currentHash = getHash(location.href).split("/");
+        _implement(_currentActive);
+
+    }
+    function setup(component, moduleName) {
+        ROOT._currentActive.next = component;
+        ROOT._currentActive = ROOT._currentActive.next;
+        return null;
+    }
+    function changeNavigation(navModule, moduleName) {
+
+    }
+
+    return {
+        setRoot: setRoot,
+        setup: setup,
+        getHash: getHash,
+        changeNavigation: changeNavigation,
+        onHashChange: onHashChange
+    };
+})();
+// if (!window.onHashChangeEvent)
+(function(){
+    var lastURL = document.URL;
+    window.addEventListener("onHashchange", function(event) {
         Object.defineProperty(event, "oldURL", {enumerable:true, configurable:true,value:lastURL});
         Object.defineProperty(event, "newURL", {enumerable:true, configurable:true,value:document.URL});
+        console.log("# Catch onHashChange event");
         lastURL = document.URL;
-        var oldUrl = getHash(event.oldURL);
-        var newUrl = getHash(event.newURL);
-        NavigationModule.hashChange(oldUrl, newUrl);
+        var oldUrl = NavigationModule.getHash(event.oldURL);
+        var newUrl = NavigationModule.getHash(event.newURL);
+        NavigationModule.onHashChange(oldUrl, newUrl);
     });
 }());

@@ -16,6 +16,7 @@ MainContentWrapper.prototype.onAttached = function() {
     } else {
         // var loginPage = new _pkg.account.Login();
         // loginPage.into(this.mainBody);
+        // this._navigationModule.setRoot(this, "login");
         this._navigationModule.setRoot(this, "test");
     }
 }
@@ -32,8 +33,10 @@ MainContentWrapper.prototype.getNavigationModules = function() {
         onNavigateXXX: function(module) {
             // TODO: update menubar
             console.log("Component: ", module);
+            thiz.mainBody.innerHTML = "";
             var imp = new module.implementation();
             imp.into(thiz.mainBody);
+            return this;
         },
         viewer: this.mainBody
     };

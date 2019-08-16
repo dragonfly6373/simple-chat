@@ -8,6 +8,7 @@ function TestNavigation() {
 __extend(BaseTemplatedWidget, TestNavigation);
 
 TestNavigation.prototype.onAttached = function() {
+    console.log("TestNavigation -- Attached");
     NavigationModule.setup(this);
 }
 
@@ -34,6 +35,7 @@ TestNavigation.prototype.getNavigationModules = function() {
             console.log("# active module", module);
             var item = thiz[module.name];
             thiz.activeTab(item);
+            return null; // return next module
         }
     };
 }
