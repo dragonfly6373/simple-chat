@@ -9,37 +9,27 @@
         this._component = null;
         this._hashname = "";
         this._next = null;
-    };
+    }
     NavModule.getHash = function(url) {
         var matching = url.match(/#(\/[\w+[\/w+]*)/);
         if (!matching || matching.length < 2) return "";
         return matching[1];
     }
+    NavModule.fromHashArray = function(hashArr) {
+        if (!hashArr || hashArr.length == 0) return null;
+        var module = new NavModule();
+        module._hashname = hashArr[0];
+        module._next = NavModule.fromHashArray(hashArr.slice(1));
+    }
     NavModule.buildHash = function(navModule) {
         var modules = navModule.getHashArray();
         return modules.join("/");
     }
-    NavModule.fromHashArray = function(hashArr) {
-        if (!hashArr || hashArr.length == 0) return null;
-        var module = new NavModule();
-        module.setHashName(hashArr[0]);
-        module.setNext(NavModule.fromHashArray(hashArr.slice(1)));
-    }
-    NavModule.prototype.setHashName = function(hashname) {
-        this._hashname = hashname;
-    }
-    NavModule.prototype.setNext = function(nexModule) {
-        this._next = nextModule;
-    }
-    NavModule.prototype.setComponent = function(component) {
-        this._component = component;
-    }
     NavModule.prototype.getHashArray = function() {
         var hashArr = [];
-        console.log("## gethasharray:", this._hashname);
         hashArr.push(this._hashname);
         if (this._next) {
-            var nextHashArr = NavModule.buildHash(this._next);
+            var nextHashArr = this._next.getHashArray();
             if (nextHashArr && nextHashArr.length) {
                 hashArr = hashArr.concat(nextHashArr);
             }
@@ -47,36 +37,40 @@
         return hashArr;
     }
     NavModule.prototype.setRoot = function(component) {
-        console.log("### Nav setRoot", component);
         var routing = component.getNavigationModules();
         if (!routing) return;
         this._component = component;
-        this._implement();
+
+        var currentHash = NavModule.getHash(document.URL);
+        var hashArray = currentHash.split("/");
+        var moduleName = (hashArray && hashArray.length > 1) ? hashArray[1] : null;
+        this._implement(moduleName);
     }
     NavModule.prototype.setup = function(component) {
-        console.log("### Nav setup:", component);
         var parentNav = Dom.findUpwardForNodeWithData(component.__node, "_navmodule");
         if (!parentNav) {
             console.error("NavigationModule does not setup");
             return;
         }
-        var navModule = parentNav._navmodule;
-        navModule._next = new NavModule();
-        navModule = navModule._next;
-        navModule._component = component;
-        navModule._implement();
-    }
-    NavModule.prototype._implement = function() {
+
+        var parent = parentNav._navmodule;
         var currentHash = NavModule.getHash(document.URL);
         var hashArray = currentHash.split("/");
         var moduleName = false;
-        for (var i = 0; i< hashArray.length - 1; i++) {
-            console.log("loop hash:", hashArray[i], this._hashname);
-            if (hashArray[i] == this._hashname) {
+        for (var i = 0; i < hashArray.length; i++) {
+            console.log("loop hash:", hashArray[i], parent._hashname);
+            if (hashArray[i] == parent._hashname) {
                 moduleName = hashArray[i + 1];
                 break;
             }
         }
+        parent._next = new NavModule();
+        var navModule = parent._next;
+        navModule._component = component;
+        navModule._implement(moduleName);
+
+    }
+    NavModule.prototype._implement = function(moduleName) {
         var routing = this._component.getNavigationModules();
         var module = routing.modules.reduce(function(a, c) {
             if (moduleName && c.name == moduleName) return c;
@@ -84,7 +78,6 @@
             else return a;
         }, null);
         if (!module) module = routing.modules[0];
-        console.log("* Nav Module implement: ", moduleName, module.name);
         this._hashname = module.name;
         this._component.__node._navmodule = this;
         if (routing.onNavigate) routing.onNavigate(module);
@@ -105,6 +98,7 @@
                 this._next._updateNavComponent = this._updateNavComponent;
                 this._next.onHashChange(hashArray.slice(1));
             } else {
+                this._hashname = hashArray[1];
                 var config = this._component.getNavigationModules();
                 config.onNavigate(config.modules.reduce(function(a, c) {return c.name == hashArray[1] ? c : a; }, null));
             }
@@ -123,7 +117,6 @@
     window.NavigationModule = new NavModule();
 
     var lastURL = document.URL;
-    console.log("# window onHashChange event");
     window.addEventListener("hashchange", function(event) {
         Object.defineProperty(event, "oldURL", {enumerable:true, configurable:true, value:lastURL});
         Object.defineProperty(event, "newURL", {enumerable:true, configurable:true, value:document.URL});

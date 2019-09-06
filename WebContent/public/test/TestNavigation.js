@@ -44,7 +44,7 @@ TestNavigation.prototype.getNavigationModules = function() {
             {name: "tab3", target: this.body3}
         ],
         onNavigate: function(module) {
-            console.log("# active module", module);
+            console.log("# TestNavigation active module", module);
             var item = thiz[module.name];
             thiz.activeTab(item);
             return null; // return next module
