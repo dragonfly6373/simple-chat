@@ -1,16 +1,28 @@
 <vbox>
     <style>
         @this {
-            & .TabHeader > * {
-                padding: 0.5em 1em;
-                background: #888;
+            & .TabHeader {
+                & > * {
+                    margin-right: 0.1em;
+                    border-top-left-radius: 0.2em;
+                    border-top-right-radius: 0.2em;
+                    background: #AAA;
+                    padding: 0.5em 1em;
+                    &.Active {
+                        background: #EEE;
+                    }
+                }
             }
-            & .TabBodyContainer > *:not(.Active) {
-                display: none;
+            & .TabBodyContainer {
+                border: 1px solid #EEE;
+                padding: 1em;
+                & > *:not(.Active) {
+                    display: none;
+                }
             }
         }
     </style>
-    <vbox>
+    <vbox class="BodyContainer">
         <hbox class="TabHeader" anon-id="tabHeaderContainer">
             <span anon-id="tab1" for-name="body1">Tab 1</span>
             <span anon-id="tab2" for-name="body2">Tab 2</span>

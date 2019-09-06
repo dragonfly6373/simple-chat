@@ -1,95 +1,136 @@
+/*
+** edit URL -> onHashChange -> detach parent nav -> implement component by hash
+** click on nav-control (tab, menu link) -> updateNavComponent = true -> updateHash
+*/
 
-var NavigationModule = (function() {
-    var ROOT = {
-        _modules: {},
-        _currentActive: null,
-        _currentHash: []
+(function() {
+    function NavModule() {
+        this._updateNavComponent = true;
+        this._component = null;
+        this._hashname = "";
+        this._next = null;
     };
-    function _implement(navModule, hashArrs) {
-        var moduleName = hashArrs[0];
-        var routing = navModule.component.getNavigationModules();
-        if(!routing) return;
+    NavModule.getHash = function(url) {
+        var matching = url.match(/#(\/[\w+[\/w+]*)/);
+        if (!matching || matching.length < 2) return "";
+        return matching[1];
+    }
+    NavModule.buildHash = function(navModule) {
+        var modules = navModule.getHashArray();
+        return modules.join("/");
+    }
+    NavModule.fromHashArray = function(hashArr) {
+        if (!hashArr || hashArr.length == 0) return null;
+        var module = new NavModule();
+        module.setHashName(hashArr[0]);
+        module.setNext(NavModule.fromHashArray(hashArr.slice(1)));
+    }
+    NavModule.prototype.setHashName = function(hashname) {
+        this._hashname = hashname;
+    }
+    NavModule.prototype.setNext = function(nexModule) {
+        this._next = nextModule;
+    }
+    NavModule.prototype.setComponent = function(component) {
+        this._component = component;
+    }
+    NavModule.prototype.getHashArray = function() {
+        var hashArr = [];
+        console.log("## gethasharray:", this._hashname);
+        hashArr.push(this._hashname);
+        if (this._next) {
+            var nextHashArr = NavModule.buildHash(this._next);
+            if (nextHashArr && nextHashArr.length) {
+                hashArr = hashArr.concat(nextHashArr);
+            }
+        }
+        return hashArr;
+    }
+    NavModule.prototype.setRoot = function(component) {
+        console.log("### Nav setRoot", component);
+        var routing = component.getNavigationModules();
+        if (!routing) return;
+        this._component = component;
+        this._implement();
+    }
+    NavModule.prototype.setup = function(component) {
+        console.log("### Nav setup:", component);
+        var parentNav = Dom.findUpwardForNodeWithData(component.__node, "_navmodule");
+        if (!parentNav) {
+            console.error("NavigationModule does not setup");
+            return;
+        }
+        var navModule = parentNav._navmodule;
+        navModule._next = new NavModule();
+        navModule = navModule._next;
+        navModule._component = component;
+        navModule._implement();
+    }
+    NavModule.prototype._implement = function() {
+        var currentHash = NavModule.getHash(document.URL);
+        var hashArray = currentHash.split("/");
+        var moduleName = false;
+        for (var i = 0; i< hashArray.length - 1; i++) {
+            console.log("loop hash:", hashArray[i], this._hashname);
+            if (hashArray[i] == this._hashname) {
+                moduleName = hashArray[i + 1];
+                break;
+            }
+        }
+        var routing = this._component.getNavigationModules();
         var module = routing.modules.reduce(function(a, c) {
             if (moduleName && c.name == moduleName) return c;
-            if (!moduleName && c.defaultActive) return c;
-            return a;
+            else if (a == null && !moduleName && c.defaultActive) return c;
+            else return a;
         }, null);
-        if (!module) return;
-        console.log("navModule", routing);
+        if (!module) module = routing.modules[0];
+        console.log("* Nav Module implement: ", moduleName, module.name);
+        this._hashname = module.name;
+        this._component.__node._navmodule = this;
         if (routing.onNavigate) routing.onNavigate(module);
         else if (routing.viewer && module.implementation) {
             routing.viewer.innerHTML = "";
             var impl = new module.implementation();
             impl.into(routing.viewer);
-            // return impl;
         }
-        if (hashArrs.length > 1) {
-            if (!navModule.next || navModule.next.hash != hashArrs[0]) {
-                _implement(navModule, hashArrs.slice(1));
-                break;
+    }
+    /* From ROOT */
+    NavModule.prototype.onHashChange = function(hashArray) {
+        if (!this._updateNavComponent) {
+            this._updateNavComponent = true;
+            return;
+        }
+        if (hashArray instanceof Array && hashArray.length > 1) {
+            if (this._hashname == hashArray[1] && this._next) {
+                this._next._updateNavComponent = this._updateNavComponent;
+                this._next.onHashChange(hashArray.slice(1));
             } else {
-                console.log("implemented", navModule.hash);
-                navModule = navModule.next;
+                var config = this._component.getNavigationModules();
+                config.onNavigate(config.modules.reduce(function(a, c) {return c.name == hashArray[1] ? c : a; }, null));
             }
         }
+        this._updateNavComponent = true;
     }
-    function getHash(url) {
-        var matching = url.match(/#\/([\w+[\/w+]*)/);
-        if (!matching || matching.length < 2) return "";
-        return matching[1];
-    }
-    function onHashChange(oldUrl, newUrl) {
-        console.log("HashChange: Old hash:", oldHash, " --New hash:", newHash);
-        var oldHash = oldUrl.split("/");
-        var newHash = newUrl.split("/");
-        var pointer = _root;
-        if (newHash.length > 1) {
-            if (!pointer.next || pointer.next.hash != newHash[0]) {
-                _implement(pointer, newHash.slice(1));
-                break;
-            } else {
-                console.log("implemented", pointer.hash);
-                pointer = pointer.next;
-            }
-        }
-    }
-    function setRoot(component) {
-        console.log("NavigationModule setRoot", component.name);
-        var routing = component.getNavigationModules();
-        if (!routing) return;
-        ROOT._modules = {hash: "", component: component};
-        ROOT._currentActive = _root;
-        ROOT._currentHash = getHash(location.href).split("/");
-        _implement(_currentActive);
-
-    }
-    function setup(component, moduleName) {
-        ROOT._currentActive.next = component;
-        ROOT._currentActive = ROOT._currentActive.next;
-        return null;
-    }
-    function changeNavigation(navModule, moduleName) {
-
+    /* From ROOT */
+    NavModule.prototype.updateHash = function(component, moduleName) {
+        this._updateNavComponent = false;
+        var navModule = component.__node._navmodule;
+        navModule._hashname = moduleName;
+        var hashStr = NavModule.buildHash(this);
+        location.hash = "/" + hashStr;
     }
 
-    return {
-        setRoot: setRoot,
-        setup: setup,
-        getHash: getHash,
-        changeNavigation: changeNavigation,
-        onHashChange: onHashChange
-    };
-})();
-// if (!window.onHashChangeEvent)
-(function(){
+    window.NavigationModule = new NavModule();
+
     var lastURL = document.URL;
-    window.addEventListener("onHashchange", function(event) {
-        Object.defineProperty(event, "oldURL", {enumerable:true, configurable:true,value:lastURL});
-        Object.defineProperty(event, "newURL", {enumerable:true, configurable:true,value:document.URL});
-        console.log("# Catch onHashChange event");
+    console.log("# window onHashChange event");
+    window.addEventListener("hashchange", function(event) {
+        Object.defineProperty(event, "oldURL", {enumerable:true, configurable:true, value:lastURL});
+        Object.defineProperty(event, "newURL", {enumerable:true, configurable:true, value:document.URL});
         lastURL = document.URL;
-        var oldUrl = NavigationModule.getHash(event.oldURL);
-        var newUrl = NavigationModule.getHash(event.newURL);
-        NavigationModule.onHashChange(oldUrl, newUrl);
+        var oldHash = NavModule.getHash(event.oldURL);
+        var newHash = NavModule.getHash(event.newURL);
+        var hashArray = newHash.split("/");
+        window.NavigationModule.onHashChange(hashArray);
     });
-}());
+})();

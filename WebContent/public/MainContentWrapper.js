@@ -17,7 +17,7 @@ MainContentWrapper.prototype.onAttached = function() {
         // var loginPage = new _pkg.account.Login();
         // loginPage.into(this.mainBody);
         // this._navigationModule.setRoot(this, "login");
-        this._navigationModule.setRoot(this, "test");
+        this._navigationModule.setRoot(this);
     }
 }
 
@@ -25,12 +25,12 @@ MainContentWrapper.prototype.getNavigationModules = function() {
     var thiz = this;
     return {
         modules: [
-            {name: "login", implementation: _pkg.account.Login, defaultActive: true},
+            {name: "login", implementation: _pkg.account.Login},
             {name: "signin", implementation: _pkg.account.Signin},
             {name: "chat", implementation: _pkg.chat.ChatContainer},
-            {name: "test", implementation: TestNavigation}
+            {name: "test", implementation: TestNavigation, defaultActive: true}
         ],
-        onNavigateXXX: function(module) {
+        onNavigate: function(module) {
             // TODO: update menubar
             console.log("Component: ", module);
             thiz.mainBody.innerHTML = "";
