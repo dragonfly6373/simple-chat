@@ -5,7 +5,7 @@ function TestNavigation() {
         var  thiz = this;
         this.activeTab(event.target);
         var forName = Dom.getAttributeAsString(event.target, "for-name");
-        var hashName = this.getNavigationModules().modules.reduce(function(a, c) {
+        var hashName = this.getNavigationModule().modules.reduce(function(a, c) {
             return (c.target == thiz[forName] ? c.name : a);
         }, "");
         NavigationModule.updateHash(this, hashName);
@@ -35,7 +35,7 @@ TestNavigation.prototype.activeTab = function(header) {
     Dom.toggleClass(activeContent, "Active", true);
 }
 
-TestNavigation.prototype.getNavigationModules = function() {
+TestNavigation.prototype.getNavigationModule = function() {
     var thiz = this;
     return {
         modules: [

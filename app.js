@@ -21,7 +21,7 @@ db.connect();
 console.log("DB", typeof(db), db);
 
 app.use(cookieParser());
-app.use(session({secret: 'secret is secret', cookie: {maxAge: 3600000}}));
+app.use(session({secret: 'secret_is_secret', cookie: {maxAge: 3600000}}));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'WebContent/public')));
 
@@ -29,21 +29,22 @@ app.get('/', (req, res, next) => {
 	res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.get('/chat', (req, res) => {
-	console.log("join chat room");
-	res.sendFile(path.join(__dirname, 'public/ChatClient.html'));
-});
-
+// - Start APIs declaration - //
 var userApi = express.Router();
-app.use('/user', userApi);
-serviceBuilder.register('user', userApi, userController);
+app.use('/userService', userApi);
+serviceBuilder.register('userService', userApi, userController);
 
 var chatApi = express.Router();
-app.use('/chat', chatApi);
-serviceBuilder.register('chat', chatApi, chatController);
+app.use('/chatService', chatApi);
+serviceBuilder.register('chatService', chatApi, chatController);
 
 app.get('/registry.js', (req, res) => {
 	res.send("window._registry = " + JSON.stringify(serviceBuilder.getAPIs()) + ";\nCommonNet.initServices(window._registry);");
+});
+// - End APIs declaration - //
+
+app.use(function(req, res, next) {
+	res.status(401).send("Oop! Authentication required");
 });
 
 app.use(function(req, res, next) {

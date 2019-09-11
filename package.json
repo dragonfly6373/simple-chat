@@ -38,5 +38,8 @@
     "socket.io-redis": "^5.2.0",
     "uglify-es": "^3.3.9",
     "web-socket": "0.0.0"
+  },
+  "devDependencies": {
+    "gulp-watch": "^5.0.1"
   }
 }

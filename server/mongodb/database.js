@@ -22,7 +22,7 @@ module.exports.connect  = function() {
 }
 
 module.exports.create = function(Clazz, data, callback) {
-    console.log("Create" + Clazz.collection.name + " - ", data);
+    console.log("Create " + Clazz.collection.name + " - ", data);
     var model = new Clazz(data);
     model.save(callback);
 };
@@ -32,15 +32,26 @@ module.exports.getById = function(Clazz, id, callback) {
     Clazz.find({_id: id}, callback);
 };
 
-module.exports.getAll = function(Clazz, query, callback) {
+
+module.exports.findOne = function(Clazz, query, callback) {
+    console.log("Get first by condition", query);
+    Clazz.findOne(query, callback);
+};
+
+module.exports.find = function(Clazz, query, callback) {
     console.log("Get All " + Clazz.collection.name + " by condition:", query);
     Clazz.find(query, callback);
 };
 
 module.exports.updateById = function(Clazz, id, data, callback) {
     console.log("Update " + Clazz.collection.name + " by id: " + id + " with new data:", data);
-    Clazz.findByIdAndUpdate(id, {$set: data}, {new: true}, callback);
+    Clazz.findByIdAndUpdate(id, {$set: data}, callback);
 };
+
+module.exports.findOneAndUpdate = function(Clazz, query, data, callback) {
+    console.log("Find by condition", query, "and update data:", data);
+    Clazz.findOneAndUpdate(query, {$set: data}, callback);
+}
 
 module.exports.updateMany = function(Clazz, query, data, callback) {
     console.log("Update all " + Clazz.collection.name + " by condition:", query, "with new data:", data);

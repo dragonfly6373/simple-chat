@@ -1,11 +1,17 @@
 var chatController = require('../controller/chat-controller.js');
 var USER_ROLES = require('../mongodb/model/User.js').USER_ROLES;
 
-var SecurityUtil = (function() {
-    function getCurrentLogin(req) {
-        if (!req.session.current_login) return null;
-        return req.session.current_login;
+var session = {
+    getCurrentLogin: function(req) {
+        if (!req.session["CURRENT_LOGIN"]) return null;
+        return req.session["CURRENT_LOGIN"];
+    },
+    setCurrentLogin: function(req, userInfo) {
+        req.session["CURRENT_LOGIN"] = userInfo;
     }
+};
+
+var requestAuthen = (function() {
     return {
         LOGIN_REQUIRED: function(req) {
             if (!getCurrentLogin(req)) return false;
@@ -40,5 +46,6 @@ var SecurityUtil = (function() {
     };
 })();
 
-module.exports.SecurityUtil = SecurityUtil;
+module.exports.session = session;
+module.exports.requestAuthen = requestAuthen;
 module.exports.USER_ROLES = USER_ROLES;

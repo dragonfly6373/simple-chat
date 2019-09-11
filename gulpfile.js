@@ -1,4 +1,5 @@
-const {src, dest, parallel, series, task} = require('gulp');
+const {src, dest, parallel, series, task, watch} = require('gulp');
+// const watch = require('gulp-watch');
 const concat = require('gulp-concat');
 const sourcemaps = require('gulp-sourcemaps');
 const clean = require('gulp-clean');
@@ -35,6 +36,7 @@ function _commonDom() {
     return src('WebContent/framework/*.js')
         .pipe(dest(path.join(DIST_PATH, 'framework')));
 }
+
 function _frameworkstyle() {
     return src('WebContent/framework/style/**/*')
         .pipe(dest(path.join(DIST_PATH, 'framework/style')));
@@ -88,3 +90,8 @@ exports.clean = function() {
 }
 
 exports.install = parallel(_framework, _component);
+
+exports.watch = function() {
+    watch('WebContent/component/**/*', _component);
+    watch('WebContent/framework/**/*', _framework);
+}

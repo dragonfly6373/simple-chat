@@ -10,23 +10,19 @@ MainContentWrapper.prototype.onAttached = function() {
 
     this.mainBody.innerHTML = "";
     if (APP_CONTEXT.CURENT_LOGIN) {
-        // var chat = new _pkg.chat.ChatContainer();
-        // chat.into(this.mainBody);
         this._navigationModule.setRoot(this, "chat");
     } else {
-        // var loginPage = new _pkg.account.Login();
-        // loginPage.into(this.mainBody);
-        // this._navigationModule.setRoot(this, "login");
-        this._navigationModule.setRoot(this);
+        this._navigationModule.setRoot(this, "login");
     }
 }
 
-MainContentWrapper.prototype.getNavigationModules = function() {
+MainContentWrapper.prototype.getNavigationModule = function() {
     var thiz = this;
+    // if (!APP_CONTEXT.CURENT_LOGIN) return null;
     return {
         modules: [
             {name: "login", implementation: _pkg.account.Login},
-            {name: "signin", implementation: _pkg.account.Signin},
+            {name: "signup", implementation: _pkg.account.Signup},
             {name: "chat", implementation: _pkg.chat.ChatContainer},
             {name: "test", implementation: TestNavigation, defaultActive: true}
         ],
@@ -37,7 +33,6 @@ MainContentWrapper.prototype.getNavigationModules = function() {
             var imp = new module.implementation();
             imp.into(thiz.mainBody);
             return this;
-        },
-        viewer: this.mainBody
+        }
     };
 }

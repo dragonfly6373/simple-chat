@@ -2,44 +2,44 @@ var db = require("../mongodb/database.js");
 var User = require("../mongodb/dao/user.js");
 var Room = require("../mongodb/dao/room.js");
 
-function createRoom(data, callback) {
+function createRoom(req, data, callback) {
     db.create(Room, data, function(error) {
         if (error) callback({error: error});
         else callback({message : "New Room created successfully"});
     });
 }
 
-function friendReques(id, callback) {
+function friendReques(req, id, callback) {
     
 }
 
-function joinChat(id, callback) {
+function joinChat(req, id, callback) {
     db.updateById(User, id, {$set: {dt_last_login: new Date()}}, function(error, user) {
         if (error) callback({error: error});
         else callback(user);
     });
 }
 
-function getGroupInfo(id, callback) {
+function getGroupInfo(req, id, callback) {
     db.getById(Room, id, function(error, data) {
         if (error) callback({error: error});
         else callback(data);
     });
 }
 
-function kickUser(id, callback) {
+function kickUser(req, id, callback) {
     // only room admin can perform
 }
 
-function sendMessageTo(from, to, message, callback) {
+function sendMessageTo(req, from, to, message, callback) {
     // log conservation history.
 }
 
-function getGroupMembers(groupId, callback) {
+function getGroupMembers(req, groupId, callback) {
     // list all members in group
 }
 
-function searchLog(id, keyword, callback) {
+function searchLog(req, id, keyword, callback) {
     // search in conservation history by keyword
 }
 

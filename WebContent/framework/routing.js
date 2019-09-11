@@ -36,14 +36,14 @@
         }
         return hashArr;
     }
-    NavModule.prototype.setRoot = function(component) {
-        var routing = component.getNavigationModules();
+    NavModule.prototype.setRoot = function(component, moduleName) {
+        var routing = component.getNavigationModule();
         if (!routing) return;
         this._component = component;
 
         var currentHash = NavModule.getHash(document.URL);
         var hashArray = currentHash.split("/");
-        var moduleName = (hashArray && hashArray.length > 1) ? hashArray[1] : null;
+        var moduleName = moduleName ? moduleName :((hashArray && hashArray.length > 1) ? hashArray[1] : null);
         this._implement(moduleName);
     }
     NavModule.prototype.setup = function(component) {
@@ -68,10 +68,10 @@
         var navModule = parent._next;
         navModule._component = component;
         navModule._implement(moduleName);
-
     }
+
     NavModule.prototype._implement = function(moduleName) {
-        var routing = this._component.getNavigationModules();
+        var routing = this._component.getNavigationModule();
         var module = routing.modules.reduce(function(a, c) {
             if (moduleName && c.name == moduleName) return c;
             else if (a == null && !moduleName && c.defaultActive) return c;
@@ -79,6 +79,7 @@
         }, null);
         if (!module) module = routing.modules[0];
         this._hashname = module.name;
+        console.log("# active hashname:", module.name);
         this._component.__node._navmodule = this;
         if (routing.onNavigate) routing.onNavigate(module);
         else if (routing.viewer && module.implementation) {
@@ -99,7 +100,7 @@
                 this._next.onHashChange(hashArray.slice(1));
             } else {
                 this._hashname = hashArray[1];
-                var config = this._component.getNavigationModules();
+                var config = this._component.getNavigationModule();
                 config.onNavigate(config.modules.reduce(function(a, c) {return c.name == hashArray[1] ? c : a; }, null));
             }
         }

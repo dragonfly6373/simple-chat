@@ -1,5 +1,6 @@
 function Login() {
     BaseTemplatedWidget.call(this);
+    this.bind("click", this.doLogin.bind(this), this.btnLogin);
 }
 __extend(BaseTemplatedWidget, Login);
 
@@ -8,9 +9,10 @@ Login.prototype.doLogin = function() {
     var pwd = this.itemPassword.value;
     $userService.login(email, pwd,
         (data) => {
-            console.log("Login success:", data);
+            SnackBar.show("You are currently login in account:" + data.name);
+            location.hash("/chat");
         },
         (error) => {
-            console.log("fail to login. Please check your username and password");
+            Dialog.alert("fail to login. Please check your username and password");
         });
 }
