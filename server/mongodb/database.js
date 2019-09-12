@@ -22,44 +22,44 @@ module.exports.connect  = function() {
 }
 
 module.exports.create = function(Clazz, data, callback) {
-    console.log("Create " + Clazz.collection.name + " - ", data);
+    console.log(" # [DB] - Create " + Clazz.collection.name + " - ", data);
     var model = new Clazz(data);
     model.save(callback);
 };
 
 module.exports.getById = function(Clazz, id, callback) {
-    console.log("Get " + Clazz.collection.name + " by id:", id);
-    Clazz.find({_id: id}, callback);
+    console.log(" # [DB] - Get " + Clazz.collection.name + " by id:", id);
+    Clazz.findById(id, callback);
 };
 
 
 module.exports.findOne = function(Clazz, query, callback) {
-    console.log("Get first by condition", query);
+    console.log(" # [DB] - Get first by condition", query);
     Clazz.findOne(query, callback);
 };
 
 module.exports.find = function(Clazz, query, callback) {
-    console.log("Get All " + Clazz.collection.name + " by condition:", query);
+    console.log(" # [DB] - Get All " + Clazz.collection.name + " by condition:", query);
     Clazz.find(query, callback);
 };
 
 module.exports.updateById = function(Clazz, id, data, callback) {
-    console.log("Update " + Clazz.collection.name + " by id: " + id + " with new data:", data);
+    console.log(" # [DB] - Update " + Clazz.collection.name + " by id: " + id + " with new data:", data);
     Clazz.findByIdAndUpdate(id, {$set: data}, callback);
 };
 
 module.exports.findOneAndUpdate = function(Clazz, query, data, callback) {
-    console.log("Find by condition", query, "and update data:", data);
+    console.log(" # [DB] - Find by condition", query, "and update data:", data);
     Clazz.findOneAndUpdate(query, {$set: data}, callback);
 }
 
 module.exports.updateMany = function(Clazz, query, data, callback) {
-    console.log("Update all " + Clazz.collection.name + " by condition:", query, "with new data:", data);
+    console.log(" # [DB] - Update all " + Clazz.collection.name + " by condition:", query, "with new data:", data);
     Clazz.updateMany(query, {$set: data}, callback);
 };
 
 module.exports.deleteById = function(Clazz, id, callback) {
-    console.log("Delete " + Clazz.collection.name + " by id: " + id);
+    console.log(" # [DB] - Delete " + Clazz.collection.name + " by id: " + id);
     Clazz.findByIdAndUpdate(id, {$set: {deleted: true}}, callback);
 };
 

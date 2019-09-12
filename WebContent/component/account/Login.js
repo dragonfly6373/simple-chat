@@ -10,7 +10,7 @@ Login.prototype.doLogin = function() {
     $userService.login(email, pwd,
         (data) => {
             SnackBar.show("You are currently login in account:" + data.name);
-            location.hash("/chat");
+            location.reload();
         },
         (error) => {
             Dialog.alert("fail to login. Please check your username and password");

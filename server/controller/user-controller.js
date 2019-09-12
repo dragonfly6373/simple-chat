@@ -50,7 +50,7 @@ function login(req, email, password, callback) {
 }
 
 function getUserInfo(req, callback) {
-    var currentLogin = session.getUserInfo(req);
+    var currentLogin = session.getCurrentLogin(req);
     if (!currentLogin) callback(false);
     db.getById(User, currentLogin._id, function(error, user) {
         if (error) callback({error: error});
@@ -62,7 +62,7 @@ function getUserInfo(req, callback) {
 }
 
 function updateUser(req, data, callback) {
-    var currentLogin = session.getUserInfo(req);
+    var currentLogin = session.getCurrentLogin(req);
     if (!currentLogin) callback(false);
     db.updateById(User, id, data, function(error, user) {
         if (error) callback({error: error});
@@ -74,7 +74,7 @@ function updateUser(req, data, callback) {
 }
 
 function changePassword(req, oldpass, newpass, callback) {
-    var currentLogin = session.getUserInfo(req);
+    var currentLogin = session.getCurrentLogin(req);
     if (!currentLogin) callback(false);
     var user = db.findOneAndUpdate(User, {_id: currentLogin._id, password: oldpass}, {$set: {password: newpass}}, function(error) {
         if (error) callback({error: error});
@@ -83,7 +83,7 @@ function changePassword(req, oldpass, newpass, callback) {
 }
 
 function getContacts(req, callback) {
-    var currentLogin = session.getUserInfo(req);
+    var currentLogin = session.getCurrentLogin(req);
     if (!currentLogin) callback(false);
     db.find(Contact, {}, function(error, users) {
         if (error) callback({error: error});
@@ -92,7 +92,7 @@ function getContacts(req, callback) {
 }
 
 function deleteUser(req, id, callback) {
-    var currentLogin = session.getUserInfo(req);
+    var currentLogin = session.getCurrentLogin(req);
     if (!currentLogin) return false;
     // db.updateById(User, id, function(error, user) {
     //     if (error) callback({error: error});

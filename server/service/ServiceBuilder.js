@@ -18,7 +18,6 @@ module.exports = (function() {
         // service = service.concat(params);
         console.log("### init API:", api_name, fnName, api[fnName]);
         return function(req, res, next) {
-            console.log("## call api_" + api_name, method, req.body);
             var values = [req];
             for (var i in params) {
                 values.push(req.body[params[i]]);
@@ -26,11 +25,18 @@ module.exports = (function() {
             values.push(function(result) {
                 res.json(result);
             });
-            if (authentication && typeof(authentication) === "function") {
+            if (!authentication) {
+                controller.apply(null, values);
+                return;
+            }
+            if (typeof(authentication) === "function") {
                 var result = authentication(req);
-                if (!result) res.json({error: "You are un-authorize to access data. Login with other account and try again."});
-                else controller.apply(null, values);
-            } else if (authentication && typof(authentication.then) === "function") {
+                if (!result) {
+                    res.json({error: "You are un-authorize to access data. Login with other account and try again."});
+                } else {
+                    controller.apply(null, values);
+                }
+            } else if (typeof(authentication.then) === "function") {
                 authentication(req, res).then(function(result) {
                         if (!result) res.json({error: "You are un-authorize to access data. Login with other account and try again."});
                         else controller.apply(null, values);

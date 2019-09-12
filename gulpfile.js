@@ -28,7 +28,7 @@ function _frameworkWidget() {
     var SRC_PATH = "WebContent/framework/widget"
     return src([path.join(SRC_PATH, 'Common.js'), path.join(SRC_PATH, 'Utils.js'), path.join(SRC_PATH, '*.js')])
         .pipe(concat('widget.pack.js'))
-        .pipe(src(path.join('*.xhtml')))
+        .pipe(src(path.join(SRC_PATH, '*.xhtml')))
         .pipe(dest(path.join(DIST_PATH, 'framework/widget')));
 }
 
