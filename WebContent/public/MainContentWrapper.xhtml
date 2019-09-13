@@ -1,23 +1,52 @@
 <vbox>
     <style>
         @this {
+            height: 100%;
+            overflow: hidden;
+            position: relative;
             & .Header {
                 min-height: 3em;
                 align-items: center;
-                background: #467;
+                background: #02d6ff;
+                & .LeftHeaderPane {
+                    padding-left: 1em;
+                    min-width: 20em;
+                }
+                & .RightHeaderPane {
+                    #sys-flex(1);
+                }
                 & a {
                     text-decoration: none;
                     font-weight: bold;
                     font-size: 1.6em;
                     color: #FFF;
+                    & icon + * {
+                        padding-left: 0.5em;
+                    }
                 }
+            }
+            & .BodyContainer {
+                #sys-flex(1);
+                & .LeftPane {
+                    height: 100%;
+                    & > * {
+                        #sys-flex(1);
+                    }
+                }
+            }
+            & .MainBody {
+                #sys-flex(1);
             }
         }
     </style>
     <hbox class="Header">
-        <a href="/"><icon class="home"></icon>Home</a>
+        <hbox class="LeftHeaderPane"><a href="/"><icon class="home"></icon><span>Home<span></a></hbox>
+        <hbox class="RightHeaderPane"></hbox>
     </hbox>
-    <vbox anon-id="mainBody" class="MainBody">
-        Main Content Wrapper
-    </vbox>
+    <hbox class="BodyContainer">
+        <vbox anon-id="leftPane" class="LeftPane"></vbox>
+        <vbox anon-id="mainBody" class="MainBody">
+            Main Content Wrapper
+        </vbox>
+    </hbox>
 </vbox>

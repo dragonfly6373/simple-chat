@@ -9,20 +9,16 @@ window.APP_CONTEXT = (function() {
                     return;
                 }
                 $userService.getUserInfo(function(userInfo) {
-                    console.log("get userInfo", userInfo);
                     if (!userInfo) {
-                        console.log("reject login");
                         reject(null);
                     }
                     if (userInfo.error) {
-                        console.log("userINfo error");
                         reject(userInfo.error);
                     }
                     window.APP_CONTEXT.CURRENT_LOGIN = userInfo;
-                    console.log("reqest current login - resolve with data:", userInfo);
                     resolve(userInfo);
                 }, function(error) {
-                    console.log("service call fail");
+                    console.error("service call fail");
                     reject(null);
                 });
             });
@@ -30,11 +26,10 @@ window.APP_CONTEXT = (function() {
         logOut: function() {
             return new Promise(function(resolve, reject) {
                 $userService.logOut(function(result) {
-                    console.log("Your account have been logout successfully.");
                     window.APP_CONTEXT.CURRENT_LOGIN = null;
                     resolve(true);
                 }, function(error) {
-                    console.log("Fail to logout with error:", error);
+                    console.error("Fail to logout with error:", error);
                     reject();
                 });
             });

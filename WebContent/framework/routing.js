@@ -101,7 +101,12 @@
             } else {
                 this._hashname = hashArray[1];
                 var config = this._component.getNavigationModule();
-                config.onNavigate(config.modules.reduce(function(a, c) {return c.name == hashArray[1] ? c : a; }, null));
+                var module = config.modules.reduce(function(a, c) {
+                    if (hashArray[1] && c.name == hashArray[1]) return c;
+                    else if (a == null && !hashArray[1] && c.defaultActive) return c;
+                    else return a;
+                }, null);
+                config.onNavigate(module);
             }
         }
         this._updateNavComponent = true;

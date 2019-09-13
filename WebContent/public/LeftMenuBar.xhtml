@@ -1,0 +1,50 @@
+<vbox>
+    <style>
+        @this {
+            & .BodyContainer {
+                #sys-flex(1);
+                background: #066;
+            }
+            & .MenuGroup,
+            & .MenuItem {
+                #sys-hbox();
+                & > * {
+                    #sys-flex(1);
+                    padding: 0.5em 1em;
+                    font-weight: bold;
+                    border-bottom: 0.1em solid #CCC;
+                    &:hover {
+                        background: #099;
+                    }
+                }
+                & a {
+                    text-decoration: none;
+                    color: #FFF;
+                    & icon + * {
+                        padding-left: 0.5em;
+                    }
+                }
+            }
+        }
+    </style>
+    <ul anon-id="BodyContainer" class="BodyContainer">
+        <li class="MenuItem">
+            <a href="#"><icon class="account"></icon><span>Hello John</span></a>
+        </li>
+        <li class="MenuItem">
+            <a href="#/test/tab1"><icon class="plus"></icon><span>Menu Item 1</span></a>
+        </li>
+        <li class="MenuGroup" mode="pull-down">
+            <a href="#/test/tab2"><icon class="plus"></icon><span>Menu Item 2</span></a>
+        </li>
+        <li class="MenuGroup" mode="pull-right">
+            <a href="#/test/tab3"><icon class="plus"></icon><span>Menu Item 3</span></a>
+        </li>
+        <li class="MenuGroup" mode="pull-down">
+            <a href="#/chat"><icon class="plus"></icon><span>Chat</span></a>
+        </li>
+        <li class="MenuGroup" mode="pull-down">
+            <a href="#/chat"><icon class="logout"></icon><span>Logout</span></a>
+        </li>
+    </ul>
+</vbox>

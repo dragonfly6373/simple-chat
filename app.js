@@ -44,11 +44,11 @@ app.get('/registry.js', (req, res) => {
 // - End APIs declaration - //
 
 app.use(function(req, res, next) {
-	res.status(401).send("Oop! Authentication required");
+	res.status(404).send("Oop! Page not be found");
 });
 
 app.use(function(req, res, next) {
-	res.status(404).send("Oop! Page not be found");
+	res.status(401).send("Oop! Authentication required");
 });
 
 var chatGroup = {};

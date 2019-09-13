@@ -12,16 +12,20 @@ MainContentWrapper.prototype.onAttached = function() {
 MainContentWrapper.prototype.getUserInfo = function() {
     var thiz = this;
     APP_CONTEXT.requestUserInfo(true).then(function(data) {
-        thiz.setupNavigationModule();
+        thiz.setup();
     }).catch(function(error) {
+        console.log("fail to request UserInfo:", error);
         var loginForm = new _pkg.account.Login();
         loginForm.into(thiz.mainBody);
     });
 }
 
-MainContentWrapper.prototype.setupNavigationModule = function() {
+MainContentWrapper.prototype.setup = function() {
     this._navigationModule = window.NavigationModule;
     this._navigationModule.setRoot(this);
+    // TODO: setup left-menu bar
+    var leftMenu = new LeftMenuBar();
+    leftMenu.into(this.leftPane);
 }
 
 MainContentWrapper.prototype.getNavigationModule = function() {
