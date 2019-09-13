@@ -33,6 +33,7 @@ MainContentWrapper.prototype.getNavigationModule = function() {
     return {
         modules: [
             {name: "chat", implementation: _pkg.chat.ChatContainer},
+            {name: "message", implementation: _pkg.chat.ChatBox},
             {name: "test", implementation: TestNavigation, defaultActive: true}
         ],
         onNavigate: function(module) {

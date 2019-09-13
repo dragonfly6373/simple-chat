@@ -1,12 +1,22 @@
 <vbox>
     <style>
         @this {
+            #sys-flex(1);
             & .MainBody {
 
             }
+            & .InputContainer {
+                border-top: 0.1em solid #666;
+            }
         }
     </style>
-    <vbox anon-id="mainBody" class="MainBody">
+    <vbox anon-id="messageContainer" class="MainBody" flex="1">
         Main Content Wrapper
     </vbox>
+    <hbox class="InputContainer">
+        <input type="text" anon-id="txtInput"/>
+        <button anon-id="btnSend" role="primary">
+            <icon class="send"></icon>
+        </button>
+    </hbox>
 </vbox>

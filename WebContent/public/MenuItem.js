@@ -10,9 +10,6 @@ MenuItem.prototype.handler = function() {
 }
 
 MenuItem.prototype.setItems = function(items) {
-
-}
-
-MenuItem.prototype.appendChild = function(item) {
-    
+    this._children = items;
+    // re-install menu-item
 }

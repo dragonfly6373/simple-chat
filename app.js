@@ -17,6 +17,9 @@ var controller = CONTEXT.controller;
 var userController = controller.user;
 var chatController = controller.chat;
 
+var socketIO = CONTEXT.socketIO;
+socketIO.start(io);
+
 db.connect();
 console.log("DB", typeof(db), db);
 
@@ -49,25 +52,6 @@ app.use(function(req, res, next) {
 
 app.use(function(req, res, next) {
 	res.status(401).send("Oop! Authentication required");
-});
-
-var chatGroup = {};
-io.on("connect", function(socket) {
-	socket.emit("user_info", {session_id: socket.id});
-	socket.on("join", function(userInfo) {
-		console.log("new user join:", userInfo);
-		chatGroup[socket.id] = {socket: socket, user_info: userInfo};
-		//io.emit("join", {user_info: userInfo});
-		socket.broadcast.emit("join", {user_info: userInfo});
-	});
-
-	socket.on("message", function(msg) {
-		io.emit("message", {user_info: chatGroup[socket.id].user_info, message: msg});
-	});
-
-	socket.on("disconnect", function() {
-		io.emit("disconnect", {user_info: chatGroup[socket.id].user_info, message: ""});
-	});
 });
 
 http.listen(properties.PORT, () => {
