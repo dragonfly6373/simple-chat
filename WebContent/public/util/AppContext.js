@@ -9,11 +9,20 @@ window.APP_CONTEXT = (function() {
                     return;
                 }
                 $userService.getUserInfo(function(userInfo) {
-                    if (!userInfo) reject(null);
-                    if (userInfo.error) reject(userInfo.error);
-                    APP_CONTEXT.CURRENT_LOGIN = userInfo;
+                    console.log("get userInfo", userInfo);
+                    if (!userInfo) {
+                        console.log("reject login");
+                        reject(null);
+                    }
+                    if (userInfo.error) {
+                        console.log("userINfo error");
+                        reject(userInfo.error);
+                    }
+                    window.APP_CONTEXT.CURRENT_LOGIN = userInfo;
+                    console.log("reqest current login - resolve with data:", userInfo);
                     resolve(userInfo);
                 }, function(error) {
+                    console.log("service call fail");
                     reject(null);
                 });
             });
