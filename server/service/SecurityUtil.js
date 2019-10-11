@@ -3,6 +3,7 @@ var USER_ROLES = require('../mongodb/model/User.js').USER_ROLES;
 
 var session = {
     getCurrentLogin: function(req) {
+        if (!req.session) return null;
         console.log("$get current_login:", req.sessionID, req.session["CURRENT_LOGIN"]);
         return req.session["CURRENT_LOGIN"];
     },

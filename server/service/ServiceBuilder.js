@@ -52,17 +52,12 @@ module.exports = (function() {
             return _services;
         },
         register: function(api_name, router, controllers) {
-            Object.getOwnPropertyNames(controllers).forEach(function(name) {
-                var controller = controllers[name];
-                if (typeof(controllers) === "function") {
-                    router.get("" + name, buildRouting(api_name, "GET", controller, null));
-                    return;
-                }
-                if (typeof(controllers) === "object" && typeof(controller.implementation) !== "function") return;
+            controllers.forEach(function(controller) {
+                if (!controller || !controller.name || typeof(controller.implementation) !== "function") return;
                 if (controller.method.toUpperCase() == "POST") {
-                    router.post("/" + name, buildRouting(api_name, "POST", controller.implementation, controller.authentication));
+                    router.post("/" + controller.name, buildRouting(api_name, "POST", controller.implementation, controller.authentication));
                 } else {
-                    router.get("/" + name, buildRouting(api_name, "GET", controller.implementation, controller.authentication));
+                    router.get("/" + controller.name, buildRouting(api_name, "GET", controller.implementation, controller.authentication));
                 }
             });
         }

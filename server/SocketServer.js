@@ -1,29 +1,13 @@
+var SecurityUtil = require("./service/SecurityUtil.js");
 var Event = {
 	EVT_CONNECT: "connect",
+	EVT_OPEN: "open",
 	EVT_JOIN: "join",
 	EVT_MESSAGE: "message",
 	EVT_LEAVE: "leave",
 	EVT_DISCONNECT: "disconnect"
 };
-/**
-io.on("connect", function(socket) {
--       socket.emit("user_info", {session_id: socket.id});
--       socket.on("join", function(userInfo) {
--               console.log("new user join:", userInfo);
--               chatGroup[socket.id] = {socket: socket, user_info: userInfo};
--               //io.emit("join", {user_info: userInfo});
--               socket.broadcast.emit("join", {user_info: userInfo});
--       });
--
--       socket.on("message", function(msg) {
--               io.emit("message", {user_info: chatGroup[socket.id].user_info, message: msg});
--       });
--
--       socket.on("disconnect", function() {
--               io.emit("disconnect", {user_info: chatGroup[socket.id].user_info, message: ""});
--       });
--});
-*/
+
 var SocketServer = (function() {
 	var _namespace = {};
 	var _group = {};
@@ -34,29 +18,35 @@ var SocketServer = (function() {
 	}
 	function onJoin(message) {
 		console.log("# socket message");
-		this.emit(Event.EVT_JOIN, "");
+		this.emit(Event.EVT_JOIN, {user_info: this._currentLogin});
 	}
 	function onMessage(message) {
-		console.log("# socket onMessage");
-		this.emit(Event.EVT_MESSAGE, message);
+		console.log("# socket onMessage", message);
+		this.emit(Event.EVT_MESSAGE, {user_info: this._currentLogin, message: message});
 	}
 	function onLeave(message) {
 		console.log("# socket message");
-		this.emit(Event.EVT_LEAVE, "");
+		this.emit(Event.EVT_LEAVE, {user_info: this._currentLogin});
 	}
 	function onDisconnect() {
 		console.log("# socket onDisconnect");
-		this.emit(Event.EVT_DISCONNECT);
+		this.emit(Event.EVT_DISCONNECT, {user_info: this._currentLogin});
+		this.disconnect();
 	}
 	return {
-		start: function(io) {
-			io.on("connect", function(socket) {
-				socket.emit("user_info", {session_id: socket.id});
-				socket.on("connect", onConnect.bind(socket));
-				socket.on("join", onJoin.bind(socket));
-				socket.on("message", onMessage.bind(socket));
-				socket.on("leave", onLeave.bind(socket));
-				socket.on("disconnect", onDisconnect.bind(socket));
+		start: function(socketIO) {
+			socketIO.on(Event.EVT_CONNECT, function(socket) {
+				var currentLogin = SecurityUtil.session.getCurrentLogin(socket.handshake);
+				if (!currentLogin) {
+					socket.disconnect();
+					return;
+				}
+				socket._currentLogin = currentLogin;
+				socket.emit(Event.EVT_OPEN, {account_info: currentLogin});
+				socket.on(Event.EVT_JOIN, onJoin.bind(socket));
+				socket.on(Event.EVT_MESSAGE, onMessage.bind(socket));
+				socket.on(Event.EVT_LEAVE, onLeave.bind(socket));
+				socket.on(Event.EVT_DISCONNECT, onDisconnect.bind(socket));
 			});
 		}
 	};

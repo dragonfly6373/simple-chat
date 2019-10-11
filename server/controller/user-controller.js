@@ -43,7 +43,7 @@ function login(req, email, password, callback) {
         else {
             var userInfo = data[0];
             data[0].password = null;
-            session.setCurrentLogin(req, {_id: userInfo._id, email: userInfo.email});
+            session.setCurrentLogin(req, {_id: userInfo._id, name: userInfo.name, email: userInfo.email});
             callback({user_info: userInfo});
         }
     });
@@ -100,13 +100,13 @@ function deleteUser(req, id, callback) {
     // });
 }
 
-module.exports = {
-    testGetAll: {method: "get", implementation: testGetAll, authentication: function(req) { return true; }},
-    isRegisteredEmail: {method: "get", implementation: isRegisteredEmail, authentication: function(req) { return true; }},
-    signup: {method: "post", implementation: signup, authentication: function(req) { return true; }},
-    login: {method: "post", implementation: login, authentication: function(req) { return true; }},
-    getUserInfo: {method: "get", implementation: getUserInfo, authentication: requestAuthen.LOGIN_REQUIRED},
-    updateUser: {method: "get", implementation: updateUser, authentication: requestAuthen.LOGIN_REQUIRED},
-    getContacts: {method: "get", implementation: getContacts, authentication: requestAuthen.LOGIN_REQUIRED},
-    deleteUser: {method: "get", implementation: deleteUser, authentication: requestAuthen.LOGIN_REQUIRED}
-};
+module.exports = [
+    {name: "testGetAll", method: "get", implementation: testGetAll, authentication: function(req) { return true; }},
+    {name: "isRegisteredEmail", method: "get", implementation: isRegisteredEmail, authentication: function(req) { return true; }},
+    {name: "signup", method: "post", implementation: signup, authentication: function(req) { return true; }},
+    {name: "login", method: "post", implementation: login, authentication: function(req) { return true; }},
+    {name: "getUserInfo", method: "get", implementation: getUserInfo, authentication: requestAuthen.LOGIN_REQUIRED},
+    {name: "updateUser", method: "get", implementation: updateUser, authentication: requestAuthen.LOGIN_REQUIRED},
+    {name: "getContacts", method: "get", implementation: getContacts, authentication: requestAuthen.LOGIN_REQUIRED},
+    {name: "deleteUser", method: "get", implementation: deleteUser, authentication: requestAuthen.LOGIN_REQUIRED}
+];

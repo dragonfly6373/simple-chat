@@ -28,12 +28,16 @@ MainContentWrapper.prototype.setup = function() {
     leftMenu.into(this.leftPane);
 }
 
+MainContentWrapper.prototype.requireLogin = function() {
+    return (APP_CONTEXT.CURRENT_LOGIN ? true : false);
+}
+
 MainContentWrapper.prototype.getNavigationModule = function() {
     var thiz = this;
     return {
         modules: [
-            {name: "chat", implementation: _pkg.chat.ChatContainer},
-            {name: "message", implementation: _pkg.chat.ChatBox},
+            {name: "chat", implementation: _pkg.chat.ChatContainer, visible: this.requireLogin.bind(this)},
+            {name: "message", implementation: _pkg.chat.ChatBox, visible: this.requireLogin.bind(this)},
             {name: "test", implementation: TestNavigation, defaultActive: true}
         ],
         onNavigate: function(module) {

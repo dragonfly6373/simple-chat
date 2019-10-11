@@ -43,11 +43,11 @@ function searchLog(req, id, keyword, callback) {
     // search in conservation history by keyword
 }
 
-module.exports = {
-    createRoom: {method: "get", implementation: createRoom},
-    joinChat: {method: "get", implementation: joinChat},
-    sendMessageTo: {method: "get", implementation: sendMessageTo},
-    getGroupInfo: {method: "get", implementation: getGroupInfo},
-    getGroupMembers: {method: "get", implementation: getGroupMembers},
-    searchLog: {method: "get", implementation: searchLog}
-};
+module.exports = [
+    {name: "createRoom", method: "get", implementation: createRoom},
+    {name: "joinChat", method: "get", implementation: joinChat},
+    {name: "sendMessageTo", method: "get", implementation: sendMessageTo},
+    {name: "getGroupInfo", method: "get", implementation: getGroupInfo},
+    {name: "getGroupMembers", method: "get", implementation: getGroupMembers},
+    {name: "searchLog", method: "get", implementation: searchLog}
+];

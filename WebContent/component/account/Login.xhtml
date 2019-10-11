@@ -18,26 +18,48 @@
                         margin-left: 1em;
                     }
                 }
+                &.Signup {
+                    & .LoginOnly {
+                        display: none;
+                    }
+                }
+                &:not(.Signup) {
+                    & .SignupOnly {
+                        display: none;
+                    }
+                }
             }
             & .Title {
                 text-align: center;
             }
         }
     </style>
-    <vbox class="BodyContainer">
+    <vbox anon-id="loginForm" class="BodyContainer">
         <h3 class="Title">Login</h3>
-        <hbox>
-            <input type="text" anon-id="itemEmail" placeholder="Email" />
+        <hbox class="InputGroup SignupOnly">
+            <span class="Label">Name</span>
+            <input type="text" anon-id="itemName" />
+        </hbox>
+        <hbox class="InputGroup">
+            <span class="Label">Email</span>
+            <input type="text" anon-id="itemEmail" />
+        </hbox>
+        <hbox class="InputGroup">
+            <span class="Label">Password</span>
+            <input type="password" anon-id="itemPassword" />
+        </hbox>
+        <hbox class="InputGroup SignupOnly">
+            <span class="Label">Retype Password</span>
+            <input type="password" anon-id="itemRePassword" />
         </hbox>
         <hbox>
-            <input type="password" anon-id="itemPassword" placeholder="Password" />
+            <a anon-id="linkRecovery" href="javascript:void(0)" class="LoginOnly">Forgot email?</a>
         </hbox>
         <hbox>
-            <a href="#">Forgot email?</a>
-        </hbox>
-        <hbox>
-            <a href="#/signup" flex="1">Create new account</a>
-            <button anon-id="btnLogin" role="primary">Login</button>
+            <a anon-id="linkCreateNew" href="javascript:void(0)" class="LoginOnly" flex="1">Create new account</a>
+            <a anon-id="linkLogin" href="javascript:void(0)" class="SignupOnly">Have own account</a>
+            <button anon-id="btnLogin" class="LoginOnly" role="primary">Login</button>
+            <button anon-id="btnSignup" class="SignupOnly" role="primary">Signup</button>
         </hbox>
     </vbox>
 </vbox>
