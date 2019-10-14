@@ -30,7 +30,7 @@ ChatBox.prototype.initChatting = function() {
     });
     this.socket.on("join", function(msg) {
         console.log("# new user join chat", msg);
-        thiz.appendMessage("join", msg.user_name, "has join to group");
+        thiz.appendMessage("join", msg.user_info, "has join to group");
     });
     this.socket.on("message", function(msg) {
         console.log("# new message come", msg);

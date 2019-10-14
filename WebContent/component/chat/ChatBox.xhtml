@@ -3,16 +3,21 @@
         @this {
             #sys-flex(1);
             & .MainBody {
-
+                & .FromUser {
+                    margin-right: 0.6em;
+                    font-weight: bold;
+                    color: gray;
+                    &::after {
+                        content: ":";
+                    }
+                }
             }
             & .InputContainer {
                 border-top: 0.1em solid #666;
             }
         }
     </style>
-    <vbox anon-id="messageContainer" class="MainBody" flex="1">
-        Main Content Wrapper
-    </vbox>
+    <vbox anon-id="messageContainer" class="MainBody" flex="1"></vbox>
     <hbox class="InputContainer">
         <input type="text" anon-id="txtInput" flex="1"/>
         <button anon-id="btnSend" role="primary">
