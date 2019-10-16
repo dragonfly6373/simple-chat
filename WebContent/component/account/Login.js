@@ -1,17 +1,32 @@
 function Login() {
     BaseTemplatedWidget.call(this);
     thiz = this;
+    var isSignupForm = false;
     this.bind("click", function() {
         Dom.toggleClass(thiz.loginForm, "Signup", true);
     }, this.linkRecovery);
     this.bind("click", function() {
         console.log("click on linkLogin");
         Dom.toggleClass(thiz.loginForm, "Signup", false);
+        thiz.isSignupForm = false;
     }, this.linkLogin);
     this.bind("click", function() {
         console.log("click on linkCreateNew");
         Dom.toggleClass(thiz.loginForm, "Signup", true);
+        thiz.isSignupForm = true;
     }, this.linkCreateNew);
+    this.bind("keypress", function() {
+        if (event.keyCode == 13) {
+            if (thiz.isSignupForm) thiz.doRegister();
+            else thiz.doLogin();
+        }
+    }, this.itemEmail);
+    this.bind("keypress", function(event) {
+        if (event.keyCode == 13) {
+            if (thiz.isSignupForm) thiz.doRegister();
+            else thiz.doLogin();
+        }
+    }, this.itemPassword);
     this.bind("click", this.doLogin.bind(this), this.btnLogin);
     this.bind("click", this.doRegister.bind(this), this.btnSignup);
 }

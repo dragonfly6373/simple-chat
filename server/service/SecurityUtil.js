@@ -4,11 +4,11 @@ var USER_ROLES = require('../mongodb/model/User.js').USER_ROLES;
 var session = {
     getCurrentLogin: function(req) {
         if (!req.session) return null;
-        console.log("$get current_login:", req.sessionID, req.session["CURRENT_LOGIN"]);
+        console.log("[SESSION] check current_login:", req.sessionID, req.session["CURRENT_LOGIN"]);
         return req.session["CURRENT_LOGIN"];
     },
     setCurrentLogin: function(req, userInfo) {
-        console.log("$set current_login:", userInfo);
+        console.log("[SESSION] set current_login:", userInfo);
         req.session["CURRENT_LOGIN"] = userInfo;
     }
 };

@@ -21,7 +21,7 @@ var SocketServer = (function() {
 		this.emit(Event.EVT_CONNECT, "");
 	}
 	function onJoin(message) {
-		console.log("# socket join", (this._currentLogin ? this._currentLogin.name : ""), this.server);
+		console.log("# socket join", (this._currentLogin ? this._currentLogin.name : ""));
 		this.server.emit(Event.EVT_JOIN, {user_info: this._currentLogin});
 	}
 	function onMessage(message) {
