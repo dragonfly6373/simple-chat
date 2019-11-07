@@ -1,6 +1,9 @@
 var mongoose = require("mongoose");
 var dbUrl = require("../properties.js").DB;
 
+var user = require("./model/User.js");
+var schema = dto.schema;
+
 module.exports.connect  = function() {
     console.log("# mongodb try to connect", dbUrl);
     mongoose.connect(dbUrl, {server:{auto_reconnect:true}, useNewUrlParser: true});
@@ -22,7 +25,7 @@ module.exports.connect  = function() {
 }
 
 module.exports.create = function(Clazz, data, callback) {
-    console.log(" # [DB] - Create " + Clazz.collection.name + " - ", data);
+    console.log(" # [DB] - Insert " + Clazz.collection.name + " - ", data);
     var model = new Clazz(data);
     model.save(callback);
 };
