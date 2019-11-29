@@ -4,7 +4,7 @@ var path = require('path');
 var http = require('http').createServer(app);
 var cookieParser = require('cookie-parser');
 var session = require('express-session')({secret: 'secret_is_secret', cookie: {maxAge: 3600000}});
-// var redisAdapter = require('socket.io-redis');
+var redis = require('socket.io-redis');
 var sharedSession = require('express-socket.io-session');
 var io = require('socket.io')(http);
 
@@ -28,6 +28,12 @@ app.use(express.static(path.join(__dirname, 'WebContent/public')));
 app.get('/', (req, res, next) => {
 	res.sendFile(path.join(__dirname, 'index.html'));
 });
+
+app.get('/support', (req, res, next) => {
+    res.setFile(path.join(__dirname, 'cms/index.html'));
+});
+
+io.adapter(redis(properties.REDIS_SERVER));
 
 io.use(sharedSession(session));
 var socketIO = CONTEXT.socketIO;

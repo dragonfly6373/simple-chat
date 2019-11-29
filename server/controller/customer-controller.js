@@ -6,6 +6,11 @@ function requestSupport(req, roomName, callback) {
 
 }
 
+function getChatHistory(req, callback) {
+
+}
+
 module.exports = [
-    {name: "requsetSupport", method: "GET", implementation: requestSupport, authentication: function(req) {return true;}}
+    {name: "requsetSupport", method: "GET", implementation: requestSupport, authentication: function(req) {return true;}},
+    {name: "getChatHistory", method: "GET", implementation: getChatHistory, authentication: function(req) {return true;}}
 ];

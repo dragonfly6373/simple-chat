@@ -1,9 +1,6 @@
 var mongoose = require("mongoose");
 var dbUrl = require("../properties.js").DB;
 
-var user = require("./model/User.js");
-var schema = dto.schema;
-
 module.exports.connect  = function() {
     console.log("# mongodb try to connect", dbUrl);
     mongoose.connect(dbUrl, {server:{auto_reconnect:true}, useNewUrlParser: true});
@@ -65,4 +62,3 @@ module.exports.deleteById = function(Clazz, id, callback) {
     console.log(" # [DB] - Delete " + Clazz.collection.name + " by id: " + id);
     Clazz.findByIdAndUpdate(id, {$set: {deleted: true}}, callback);
 };
-

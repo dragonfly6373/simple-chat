@@ -23,7 +23,7 @@ ChatBox.prototype.onAttached = function() {
 
 ChatBox.prototype.initChatting = function() {
     var thiz = this;
-    this.socket = io();
+    this.socket = io("chat");
     this.socket.on("open", function(msg) {
         console.log("# open connection:", msg);
         thiz.socket.emit("join", {user_id: APP_CONTEXT.CURRENT_LOGIN.id, user_name: APP_CONTEXT.CURRENT_LOGIN.name});

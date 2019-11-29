@@ -1,7 +1,5 @@
 var SecurityUtil = require("./service/SecurityUtil.js");
 var ChatService = (function() {
-    var _rooms = [];
-
     var Event = {
         EVT_CONNECT: "connection",
         EVT_MESSAGE: "message",
@@ -12,24 +10,42 @@ var ChatService = (function() {
         EVT_ROOM_JOIN: "room_accept",
         EVT_LEAVE: "leave",
     };
-
+    var USER_ROLE = {
+        CUSTOMER: 1,
+        CS_TEAM: 2
+    };
+    function generateTimeId() {
+        var randomChar = function() {
+            return Math.floor(Math.random() * 26 + 10).toString(36);
+        };
+        return (randomChar() + randomChar() + randomChar() + "-" + Math.floor(Date.now()).toString(36));
+    }
     function _getUserInfo() {
         return SecurityUtil.session.getCurrentLogin(this.handshake);
     }
-    function onConnect(message) {
-        console.log("# socket onConnect", (this._currentLogin ? this._currentLogin.name : ""));
-        this.emit(Event.EVT_CONNECT, "");
-    }
+
+    var DEFAULT_ROOMS = {SERVICE_ROOM: {id: generateTimeId(), name: "Customer Service"}};
+
     function onJoin(message) {
         console.log("# socket join", (this._currentLogin ? this._currentLogin.name : ""));
-        this._rooms.push(room);
-        this.join(room);
-        this.in(room).emit(Event.EVT_JOIN, {user_info: this._currentLogin})
-        this.server.emit(Event.EVT_JOIN, {user_info: this._currentLogin});
+        if (!message.room) {
+            var room = DEFAULT_ROOMS.SERVICE_ROOM;
+            this._rooms.push(room.id);
+            this.join(room.id); // join to service_room
+            this.in(room.id).emit(Event.EVT_WELCOME, {room: room});
+            return;
+        }
+        var roomId = message.room;
+        this.in(roomId).emit()
+        // this.server.emit(Event.EVT_JOIN, {user_info: this._currentLogin});
     }
     function onMessage(message) {
         console.log("# socket onMessage", message, (this._currentLogin ? this._currentLogin.name : ""));
         this.server.emit(Event.EVT_MESSAGE, {user_info: _getUserInfo.call(this), message: message});
+    }
+    function onLeave(message) {
+        console.log("# socket onLeave", message, (this._currentLogin ? this._currentLogin.name : ""));
+        this.server.emit(Event.EVT_LEAVE, {user_info: _getUserInfo.call(this), message: message});
     }
     function leaveRoom(room_id) {
         if (!this._rooms[room_id]) return;
@@ -55,7 +71,6 @@ var ChatService = (function() {
                 socket.emit(Event.EVT_WELCOME, {account_info: currentLogin});
                 socket.on(Event.EVT_HELLO, onJoin.bind(socket));
                 socket.on(Event.EVT_MESSAGE, onMessage.bind(socket));
-                socket.on(Event.EVT_REFRESH, onRefresh.bind(socket));
                 socket.on(Event.EVT_LEAVE, onLeave.bind(socket));
                 socket.on(Event.EVT_DISCONNECT, onDisconnect.bind(socket));
             });
@@ -63,15 +78,4 @@ var ChatService = (function() {
     };
 })();
 
-ChatService.BaseRoom = function (socket) {
-
-};
-
-ChatService.ServiceRoom = function(socket) {
-    BaseRoom.call(this);
-};
-
-ChatService.PrivateRoom = function(socket) {
-    BaseRoom.call(this);
-};
-
+module.exports = ChatService;

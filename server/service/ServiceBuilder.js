@@ -42,6 +42,7 @@ module.exports = (function() {
                         else controller.apply(null, values);
                     })
                     .catch(function(error) {
+                        res.status(401);
                         res.json({error: "You are un-authorize to access data. Login with other account and try again."});
                     });
             }
