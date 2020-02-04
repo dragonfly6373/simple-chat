@@ -39,9 +39,9 @@ TestNavigation.prototype.getNavigationModule = function() {
     var thiz = this;
     return {
         modules: [
-            {name: "tab1", target: this.body1},
-            {name: "tab2", target: this.body2, defaultActive: true},
-            {name: "tab3", target: this.body3}
+            {name: "#tab1", target: this.body1},
+            {name: "#tab2", target: this.body2, defaultActive: true},
+            {name: "#tab3", target: this.body3}
         ],
         onNavigate: function(module) {
             console.log("# TestNavigation active module", module);

@@ -1,6 +1,5 @@
 function MainContentWrapper() {
     BaseTemplatedWidget.call(this);
-    this._navigationModule = null;
 }
 __extend(BaseTemplatedWidget, MainContentWrapper);
 
@@ -21,8 +20,7 @@ MainContentWrapper.prototype.getUserInfo = function() {
 }
 
 MainContentWrapper.prototype.setup = function() {
-    this._navigationModule = window.NavigationModule;
-    this._navigationModule.setRoot(this);
+    window.NavigationModule.setup(this);
     // TODO: setup left-menu bar
     var leftMenu = new LeftMenuBar();
     leftMenu.into(this.leftPane);
